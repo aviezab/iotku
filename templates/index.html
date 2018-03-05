@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>iotKu</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/master.css">
+  </head>
+
+  <body>
+    <div class="bg-1">
+      <div id="panel-login">
+        <h2>Login to Account</h2>
+        <form class="" action="/login" method="post">
+          <input type="email" name="email" placeholder="Email" class="form-control">
+          <input type="password" name="password" placeholder="Password" class="form-control">
+          <button type="submit" name="login" class="btn btn-iot">Login</button>
+          <button type="button" name="register" id="btn-register" class="btn btn-iot">Register</button>
+        </form>
+        <a href="#">Forgot Password?</a>
+      </div>
+      <div id="panel-register">
+        <h2>Register an Account</h2>
+        <form class="" id="registerForm" action="/register" method="post">
+          <input type="email" name="email" id="email" placeholder="Email" class="form-control">
+          <input type="password" name="password" id="password" placeholder="Password" class="form-control">
+          <input type="password" name="confirm" id="confirm" placeholder="Confirm Password" class="form-control">
+          <button type="button" name="register" id="btn-register-submit" class="btn btn-iot">Register</button>
+          <button type="button" name="login" id="btn-signIn2" class="btn btn-iot">Login</button>
+        </form>
+      </div>
+      <div class="home">
+        <h1>iotKu</h1>
+        {% if msg %}
+        <h2>{{ msg }}</h2>
+        {% else %}
+        <h2></h2>
+        {% endif %}
+        <h3>Internet of Things Platform</h3>
+        <br>
+        <p>
+          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has
+          survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
+          publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+        </p>
+        <button type="button" id="btn-signIn" class="btn btn-iot">
+          Sign In
+        </button>
+      </div>
+    </div>
+    <footer class="footer-text">Made With <span class="fa fa-heart" style="color: rgb(224, 57, 74)"></span><br>© 2018 Team iotKu</footer>
+  </body>
+  <script src="/static/js/jquery-3.2.1.js"></script>
+  <script type="text/javascript" src="/static/js/animate.js"></script>
+
+</html>

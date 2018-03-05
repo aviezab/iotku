@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Dashboard</title>
+<link rel="stylesheet" href="/static/css/bootstrap.css">
+<link rel="stylesheet" href="/static/css/font-awesome.min.css">
+<link rel="stylesheet" href="/static/css/master.css">
+<script src="/static/js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
