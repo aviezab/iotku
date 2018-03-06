@@ -1,11 +1,10 @@
 body {
   color: white;
-  margin-left: 50px;
 }
 
 .navbar {
   background-color: black;
-  height: 50px;
+  min-height: 50px;
 }
 
 /* The navigation menu links */
@@ -29,6 +28,7 @@ body {
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
 #main {
   margin-top: 50px;
+  margin-left: 50px;
   transition: margin-left .5s;
   padding: 20px;
 }
@@ -67,7 +67,7 @@ body {
    .sidenav a {font-size: 18px;}
 }
 
-@media screen and (max-width: 450px) {
-  #main {margin-left: 0}
-   .sidenav {display: none;}
+@media screen and (max-width: 650px) {
+  #main {margin-left: 0 !important;}
+  .sidenav {display: none;}
 }
