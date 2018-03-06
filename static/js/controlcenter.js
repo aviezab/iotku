@@ -6,6 +6,7 @@ $(document).ready(function(){
       $("#anim-up").animate({width:'-=100%',height:'-=100%'},5000,"linear",function(){$(this).remove();});
       $("#anim-right").animate({width:'-=100%',height:'-=100%'},5000,"linear",function(){$(this).remove();});
       $("#anim-down").animate({width:'-=100%',height:'-=100%'},5000,"linear",function(){$(this).remove();});
+      
     });
   });
 });
