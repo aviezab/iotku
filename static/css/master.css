@@ -139,12 +139,28 @@ body {
   transition: 0.5s;
 }
 .side-nav li > a:hover {
-  color: rgb(224, 57, 74);;
+  color: rgb(224, 57, 74);
   padding-left: 8px;
   font-weight: 500;
 }
 .side-nav li:hover {
   cursor: pointer;
+}
+.form-plus {
+  position: relative;
+  margin-bottom: 15px;
+}
+.form-plus input[type="text"] {
+  width: 150px;
+  background-color: transparent;
+}
+.form-plus input[type="submit"] {
+  width: 70px;
+  background-color: rgb(224, 57, 74);
+  border: none;
+  border-radius: 5px;
+  margin-top: 5px;
+  right: 0;
 }
 .btn-plus {
   border: none;
@@ -196,4 +212,36 @@ body {
   margin-bottom: 30px;
   width: 50%;
   height: auto;
+}
+/* halaman device */
+table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  margin-top: 30px;
+  font-size: 15px;
+}
+table a {
+  text-decoration: none;
+  color: rgb(180, 18, 34);
+}
+table a:hover {
+  color: rgb(250, 81, 98);
+}
+td, th {
+  border: 1px solid white;
+  text-align: center;
+  padding: 10px;
+}
+th {
+  background-color: rgb(224, 57, 74);
+  color: white;
+}
+tr {
+  background-color: rgb(242, 242, 242);
+  color: rgb(20, 20, 20);
+}
+tr:nth-child(even) {
+  background-color: rgb(230, 230, 230);
+  color: rgb(20, 20, 20);
 }
