@@ -6,7 +6,7 @@ from redissession import RedisSessionInterface
 client = MongoClient()
 app = Flask(__name__, static_url_path='/static')
 #Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
-app.session_interface = RedisSessionInterface
+app.session_interface = RedisSessionInterface()
 
 @app.route("/")
 def index():
