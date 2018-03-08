@@ -1,9 +1,12 @@
 from flask import *
 from pymongo import MongoClient
 import os
+from redissession import RedisSessionInterface
 
 client = MongoClient()
 app = Flask(__name__, static_url_path='/static')
+#Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
+app.session_interface = RedisSessionInterface
 
 @app.route("/")
 def index():
@@ -24,6 +27,14 @@ def do_login():
             flash('wrong password!')
     return redirect(url_for('index'))
 
+@app.route('/logout')
+def do_logout():
+   #Membuang session. {dev aviezab 2018.03.08}
+   session.pop('email', None)
+   session['logged_in'] = False
+   return redirect(url_for('index'))
+
+
 @app.route('/register', methods=['POST'])
 def do_register():
     if request.form['password'] and request.form['email']:
@@ -37,4 +48,4 @@ def do_register():
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
-    app.run(debug=True,host='127.0.0.1', port=5000)
+    app.run(debug=True,host='0.0.0.0', port=5000)
