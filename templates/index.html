@@ -12,6 +12,7 @@
   <body>
     <div class="bg-1">
       <div id="panel-login">
+        <a href="#" class="close-btn">&times;</a>
         <h2>Login to Account</h2>
         <form class="" action="/login" method="post">
           <input type="email" name="email" placeholder="Email" class="form-control">
@@ -22,6 +23,7 @@
         <a href="#">Forgot Password?</a>
       </div>
       <div id="panel-register">
+        <a href="#" class="close-btn">&times;</a>
         <h2>Register an Account</h2>
         <form class="" id="registerForm" action="/register" method="post">
           <input type="email" name="email" id="email" placeholder="Email" class="form-control">
@@ -33,11 +35,6 @@
       </div>
       <div class="home">
         <h1>iotKu</h1>
-        {% if msg %}
-        <h2>{{ msg }}</h2>
-        {% else %}
-        <h2></h2>
-        {% endif %}
         <h3>Internet of Things Platform</h3>
         <br>
         <p>
@@ -49,6 +46,9 @@
           Sign In
         </button>
       </div>
+    </div>
+    <div class="bg-2">
+
     </div>
     <footer class="footer-text">Made With <span class="fa fa-heart" style="color: rgb(224, 57, 74)"></span><br>© 2018 Team iotKu</footer>
   </body>

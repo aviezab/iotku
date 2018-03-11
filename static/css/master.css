@@ -96,6 +96,19 @@ body {
   color: rgba(255,255,255,0.55);
   padding-left: 5px;
 }
+.close-btn {
+  position: absolute;
+  font-size: 40px;
+  top: 0;
+  right: 20px;
+  text-decoration: none;
+}
+.close-btn:hover, .close-btn:focus {
+  text-decoration: none;
+}
+#panel-login .close-btn:hover, #panel-register .close-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
 .footer-text {
   position: absolute;
   color: rgba(255,255,255,0.65);
