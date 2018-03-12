@@ -2,6 +2,7 @@ from flask import *
 from pymongo import MongoClient
 import os
 from redissession import RedisSessionInterface
+import hashlib
 
 client = MongoClient()
 app = Flask(__name__, static_url_path='/static')
@@ -40,8 +41,12 @@ def do_register():
     if request.form['password'] and request.form['email']:
         db = client['iotku']
         collection = db['user']
-        if not collection.find_one({"email":request.form['email']}) and not collection.find_one({"ip":request.remote_addr}):
-            collection.insert_one({"email":request.form['email'],"password":request.form['password'],"ip":request.environ.get('HTTP_X_REAL_IP', request.remote_addr)})
+        if not collection.find_one({"email":request.form['email']}):
+            collection.insert_one({"email":request.form['email'],
+                                "password":request.form['password'],
+                                "api_key":hashlib.md5(request.form['email'].encode('utf-8')).hexdigest(),
+                                "device":{}
+                                })
         session['logged_in'] = True
         session['email'] = request.form['email']
     return redirect(url_for('index'))
