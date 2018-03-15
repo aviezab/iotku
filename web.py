@@ -14,7 +14,7 @@ def index():
     if not session.get('logged_in'):
         return render_template('index.html')
     else:
-        return render_template('dashboard.html', username=session.get('email'))
+        return render_template('dashboard.html', username=session.get('email'), device=[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()])
 
 @app.route('/login', methods=['POST'])
 def do_login():
@@ -50,6 +50,13 @@ def do_register():
         session['logged_in'] = True
         session['email'] = request.form['email']
     return redirect(url_for('index'))
+
+@app.route('/device', methods=['GET'])
+def device():
+    if session.get('logged_in'):
+        return render_template('device.html', username=session.get('email'), device=[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()])
+    else:
+        return render_template('index.html')
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
