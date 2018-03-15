@@ -6,10 +6,16 @@ $(document).ready(function(){
             bool2 = false;
         }
         else {
-            $('#panel-login').slideToggle('slow');
+            $('#panel-login').slideDown('slow');
             bool1 = true;
         }
     });
+    //close button click up
+    $('.close-btn').click(function(){
+      $('#panel-login').slideUp('slow')
+      $('#panel-register').slideUp('slow')
+    });
+
     $('#btn-signIn2').click(function(){
         bool1 = true, bool2 = false;
         $('#panel-login').slideDown('slow');
@@ -19,7 +25,7 @@ $(document).ready(function(){
         bool2 = true, bool1 = false;
         $('#panel-login').slideUp('slow');
         $('#panel-register').slideDown('slow');
-    });
+    }).delay(500);
     $("#btn-register-submit").click(function () {
         var password = $("#password").val();
         var confirmPassword = $("#confirm").val();
@@ -27,6 +33,6 @@ $(document).ready(function(){
             alert("Passwords do not match.");
             return false;
         }
-        document.getElementById("registerForm").submit(); 
+        document.getElementById("registerForm").submit();
     });
 });
