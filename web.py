@@ -14,7 +14,7 @@ def index():
     if not session.get('logged_in'):
         return render_template('index.html')
     else:
-        return render_template('dashboard.html', username=session.get('email'), device=[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()])
+        return render_template('dashboard.html', username=session.get('email'), device=[[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'],x] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()])
 
 @app.route('/login', methods=['POST'])
 def do_login():
@@ -53,10 +53,13 @@ def do_register():
 
 @app.route('/device', methods=['GET'])
 def device():
-    if session.get('logged_in'):
-        return render_template('device.html', username=session.get('email'), device=[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()])
+    if session.get('logged_in') and request.args.get('device_ip'):
+        if request.args.get('device_ip') in client['iotku']['user'].find_one({'email':session['email']})['device']:
+            return render_template('device.html', username=session.get('email'), device=[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()], sensor=[[x,client['iotku']['device_data'].find_one({'_id':client['iotku']['user'].find_one({'email':session['email']})['device'][request.args.get('device_ip')]['id']})['data'][x]['latest']] for x in client['iotku']['device_data'].find_one({'_id':client['iotku']['user'].find_one({'email':session['email']})['device'][request.args.get('device_ip')]['id']})['data']])
+        else:
+            return redirect(url_for('index'))
     else:
-        return render_template('index.html')
+        return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)

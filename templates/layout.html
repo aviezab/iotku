@@ -66,7 +66,7 @@
           <ul>
             <h5>Active Devices</h5>
             {% for x in device %}
-            <li><a href="/device?device_name={{x}}">{{x}}</a></li>
+            <li><a href="/device?device_ip={{x[1]}}">{{x[0]}}</a></li>
             {% endfor %}
           </ul>
           <button type="button" class="btn-plus">
