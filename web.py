@@ -46,8 +46,8 @@ def do_register():
                                 "api_key":hashlib.md5(request.form['email'].encode('utf-8')).hexdigest(),
                                 "device":{}
                                 })
-        session['logged_in'] = True
-        session['email'] = request.form['email']
+            session['logged_in'] = True
+            session['email'] = request.form['email']
     return redirect(url_for('index'))
 
 @app.route('/device', methods=['GET'])
