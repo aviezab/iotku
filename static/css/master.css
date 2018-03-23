@@ -262,11 +262,12 @@ tr:nth-child(even) {
 /* dashboard profile */
 .bg-profile {
   background-color: rgb(250, 250, 250);
+  max-height: 2000px;
 }
 .bg-content {
   width: 70%;
-  height: 590px;
-  max-height: 100vh;
+  /* height: 590px; */
+  max-height: 2000px;
   margin: 0 auto;
   background-color: rgb(255, 255, 255);
 }
