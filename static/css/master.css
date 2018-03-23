@@ -258,3 +258,87 @@ tr:nth-child(even) {
   background-color: rgb(230, 230, 230);
   color: rgb(20, 20, 20);
 }
+
+/* dashboard profile */
+.bg-profile {
+  background-color: rgb(250, 250, 250);
+}
+.bg-content {
+  width: 70%;
+  height: 590px;
+  max-height: 100vh;
+  margin: 0 auto;
+  background-color: rgb(255, 255, 255);
+}
+.bg-content > .btn-edit {
+  margin-top: 15px;
+  margin-left: 80%;
+}
+.header-profile {
+  padding: 15px 10px;
+  margin-left: 10%;
+  margin-right: 5%;
+}
+.header-profile #gray {
+  color: rgb(176, 176, 176);
+}
+.header-profile h3 {
+  text-align: left;
+  color: rgb(223, 62, 62);
+}
+.header-profile p {
+  text-align: left;
+  color: rgb(231, 106, 106);
+}
+.header-profile .btn-edit {
+  margin-left: 15px;
+}
+.btn-generate {
+  background-color: transparent;
+  color: rgb(255, 115, 0);
+  border: 2px solid rgb(255, 115, 0);
+  border-radius: 15px;
+  margin-top: 5px;
+  padding: 2px 20px;
+}
+.btn-generate:hover, .btn-generate:focus {
+  color: rgb(255, 174, 106);
+  border: 2px solid rgb(255, 174, 106);
+}
+.btn-edit {
+  background-color: transparent;
+  color: rgb(170, 170, 170);
+  border: 2px solid rgb(170, 170, 170);
+  border-radius: 15px;
+  margin-top: 5px;
+  padding: 2px 20px;
+}
+.btn-edit:hover, .btn-edit:focus {
+  color: rgb(200, 200, 200);
+  border: 2px solid rgb(200, 200, 200);
+}
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+.container-profile {
+  margin-left: 5%;
+}
+.total-data p {
+  font-size: 25px;
+  font-weight: bold;
+  color: rgb(255, 174, 106);
+  text-align: center;
+}
+.total-data h2 {
+  color: rgb(223, 62, 62);
+}
+.activity h2 {
+  color: rgb(223, 62, 62);
+}
+.activity p {
+  color: rgb(116, 116, 116);
+  font-size: 20px;
+  padding-bottom: 5px;
+}
