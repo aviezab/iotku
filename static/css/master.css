@@ -266,3 +266,9 @@ tr:nth-child(even) {
   background-color: rgb(230, 230, 230);
   color: rgb(20, 20, 20);
 }
+@media screen and (max-width: 600px)
+{
+    #panel-login, #panel-register {
+        width: 100%;
+    }
+}
