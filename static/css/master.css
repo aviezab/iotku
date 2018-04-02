@@ -198,6 +198,14 @@ body {
   margin-top: 5px;
   right: 0;
 }
+button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
 .btn-plus {
   border: none;
   text-decoration: none;
@@ -280,6 +288,13 @@ tr {
 tr:nth-child(even) {
   background-color: rgb(230, 230, 230);
   color: rgb(20, 20, 20);
+}
+
+@media screen and (max-width: 600px)
+{
+    #panel-login, #panel-register {
+        width: 100%;
+    }
 }
 
 /* dashboard profile */
@@ -366,3 +381,4 @@ tr:nth-child(even) {
   font-size: 20px;
   padding-bottom: 5px;
 }
+>>>>>>> ca85cc4f327bebdecec107d0832e892c97d3856c
