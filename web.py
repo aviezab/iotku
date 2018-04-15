@@ -181,7 +181,7 @@ def get_sensor_data():
 			if ip_address in doc['device'].keys():
 				data_doc = db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})
 				if sensor_id in data_doc['sensorList']:
-					time_added = list(data_doc['sensorList'][sensor_id]['data'].keys())[request.args['from']:request.args['from']+25]
+					time_added = list(data_doc['sensorList'][sensor_id]['data'].keys())[from_number:from_number+25]
 					data = [data_doc['sensorList'][sensor_id]['data'][x] for x in time_added]
 					return jsonify({'result':{time_added[x]: data[x] for x in range(25) if x < len(time_added)}})
 				else: return jsonify({'result':False,'reason':'Sensor ID not found'})
