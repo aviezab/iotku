@@ -10,11 +10,10 @@ app.session_interface = RedisSessionInterface()
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template('index.html')
-
-@app.route("/dashboard", methods=['GET'])
-def dashboard():
-	return render_template('dashboard.html')
+	if session.get('logged_in') and session.get('email'):
+		return render_template('dashboard.html')
+    else: 
+		return render_template('index.html')
 
 @app.route('/register', methods=['POST'])
 def do_register():
@@ -99,7 +98,8 @@ def do_logout():
 	session.pop('email', None)
 	session.pop('api_key', None)
 	session['logged_in'] = False
-	return jsonify({'result': True})
+	if request.method == 'POST': return redirect(url_for('index'))
+	else: return jsonify({'result': True})
 
 @app.route('/api/is_logged_in')
 def is_logged_in():
@@ -126,13 +126,13 @@ def post_data():
 
 
 #------------------GET Data-------------------------
-@app.route('/api/logged_in_email')
+@app.route('/api/logged_in_email', methods=['GET'])
 def get_logged_in_email():
 	if session.get('logged_in') and session.get('email'):
 		return jsonify({'result': session['email']})
 	else: return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 	
-@app.route('/api/logged_in_api_key')
+@app.route('/api/logged_in_api_key', methods=['GET'])
 def get_logged_in_api_key():
 	if session.get('logged_in') and session.get('api_key'):
 		return jsonify({'result': session['api_key']})
@@ -155,7 +155,7 @@ def get_sensor_list():
 			ip_address = content['device_ip']
 			db = client['iotku']
 			collection = db['user']
-			doc = collection.find({'email':session['email']})
+			doc = collection.find_one({'email':session['email']})
 			if ip_address in doc['device'].keys():
 				sensorName = [x for x in db['device_data'].find_one({'_id':doc[ip_address]['id']})['sensorList'].keys()]
 				sensorDate = [db['device_data'].find_one({'_id':doc[ip_address]['id']})['sensorList'][x]['date_created'] for x in sensorName]
@@ -174,9 +174,9 @@ def get_sensor_data():
 				sensor_id = request.args['sensorId']
 				db = client['iotku']
 				collection = db['user']
-				doc = collection.find({'email':session['email']})
+				doc = collection.find_one({'email':session['email']})
 				if ip_address in doc['device'].keys():
-					data_doc = db['device_data'].find({'_id':doc[ip_address]['id']})
+					data_doc = db['device_data'].find_one({'_id':doc[ip_address]['id']})
 					if sensor_id in data_doc['sensorList']:
 						time_added = list(data_doc['sensorList'][sensor_id]['data'].keys())[request.args['from']:request.args['from']+25]
 						data = [data_doc['sensorList'][sensor_id]['data'][x] for x in time_added]
