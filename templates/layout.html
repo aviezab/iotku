@@ -11,13 +11,14 @@
   <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
   {% endblock %}
 </head>
-<body style="display: none">
+<body>
   <script>
   	$.get( "http://apione.iotku.id/logged_in_email", function(data) {
 		var json = JSON.parse(data);
 		if (json.result == false) {
 			window.location.href = "http://dev.iotku.id/";
 		}
+	});
   </script>
   <div class="dashboard">
     <nav class="navbar navbar-default">
@@ -70,8 +71,8 @@
             <li><a href="#">Plan</a></li>
           </ul>
 
-          <ul id="device-list>
-            <h5>Active Devices <button type="button" class="btn-reload-devices"><span class="fa fa-refresh" aria-hidden="true"></span></button></h5>
+          <ul id="device-list">
+            <h5>Active Devices <span><button type="button"class="btn-reload-devices fa fa-refresh" aria-hidden="true"></span></h5>
 			<div id="device-list"></div>
           </ul>
           <button type="button" class="btn-plus">
