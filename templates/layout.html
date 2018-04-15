@@ -46,7 +46,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
           <li><a href="#">Profile</a></li>
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="http://apione.iotku.id/disconnect">Logout</a></li>
           </ul>
         </div>
       <!-- /.navbar-collapse -->
@@ -63,11 +63,9 @@
             <li><a href="#">Plan</a></li>
           </ul>
 
-          <ul>
-            <h5>Active Devices <i class="fa fa-refresh" aria-hidden="true"></i></h5>
-            {% for x in device %}
-            <li><a href="/device?device_ip={{x[1]}}">{{x[0]}}</a></li>
-            {% endfor %}
+          <ul id="device-list>
+            <h5>Active Devices <button type="button" class="btn-reload-devices"><span class="fa fa-refresh" aria-hidden="true"></span></button></h5>
+			<div id="device-list"></div>
           </ul>
           <button type="button" class="btn-plus">
             <h2><span class="fa fa-plus"></span></h2>
