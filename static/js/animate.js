@@ -35,4 +35,10 @@ $(document).ready(function(){
         }
         document.getElementById("registerForm").submit();
     });
+	$("#btn-login-submit").click(function () {
+        $.post("http://apione.iotku.id/connect", {"email": $("#login-email").val(), "password": $("#login-password").val()}, function(result){
+			console.log(result);
+		}
+    });
+    });
 });

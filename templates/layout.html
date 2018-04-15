@@ -14,8 +14,8 @@
 <body>
   <script>
   	$.get( "http://apione.iotku.id/logged_in_email", function(data) {
-		var json = JSON.parse(data);
-		if (json.result == false) {
+		var json_data = JSON.parse(data);
+		if (json_data.result == false) {
 			window.location.href = "http://dev.iotku.id/";
 		}
 	});
