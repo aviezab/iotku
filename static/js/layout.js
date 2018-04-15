@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $('.btn-reload-devices').click(function(){
-		$.get( "http://apione.iotku.id/get_device_list", function(data) {
+		$.get( "/api/get_device_list", function(data) {
 			$('#device-list').empty();
 			var json = JSON.parse(data);
 			for(var k in json['result']) {

@@ -13,9 +13,8 @@
 </head>
 <body>
   <script>
-  	$.get( "http://apione.iotku.id/logged_in_email", function(data) {
-		var json_data = JSON.parse(data);
-		if (json_data.result == false) {
+  	$.get( "/api/logged_in_email", function(data) {
+		if (data.result == false) {
 			window.location.href = "http://dev.iotku.id/";
 		}
 	});
@@ -54,7 +53,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
           <li><a href="#">Profile</a></li>
-          <li><a href="http://apione.iotku.id/disconnect">Logout</a></li>
+          <li><a href="/api/disconnect">Logout</a></li>
           </ul>
         </div>
       <!-- /.navbar-collapse -->
