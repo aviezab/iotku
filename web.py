@@ -157,8 +157,8 @@ def get_sensor_list():
 			collection = db['user']
 			doc = collection.find_one({'email':session['email']})
 			if ip_address in doc['device'].keys():
-				sensorName = [x for x in db['device_data'].find_one({'_id':doc[ip_address]['id']})['sensorList'].keys()]
-				sensorDate = [db['device_data'].find_one({'_id':doc[ip_address]['id']})['sensorList'][x]['date_created'] for x in sensorName]
+				sensorName = [x for x in db['device_data'].find_one({'_id':doc['devices'][ip_address]['id']})['sensorList'].keys()]
+				sensorDate = [db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})['sensorList'][x]['date_created'] for x in sensorName]
 				sensorList = [list(x) for x in zip(sensorName, sensorDate)]
 				return jsonify({'result':sensorList})
 			else: return jsonify({'result':False,'reason':'Device IP not found'})
