@@ -169,21 +169,23 @@ def get_sensor_list():
 def get_sensor_data():
 	if session.get('logged_in') and session.get('email'):
 		if request.args.get('device_ip') and request.args.get('sensorId') and request.args.get('from'):
-			if type(request.args.get('from')) == type(int()):
-				ip_address = request.args['device_ip']
-				sensor_id = request.args['sensorId']
-				db = client['iotku']
-				collection = db['user']
-				doc = collection.find_one({'email':session['email']})
-				if ip_address in doc['device'].keys():
-					data_doc = db['device_data'].find_one({'_id':doc[ip_address]['id']})
-					if sensor_id in data_doc['sensorList']:
-						time_added = list(data_doc['sensorList'][sensor_id]['data'].keys())[request.args['from']:request.args['from']+25]
-						data = [data_doc['sensorList'][sensor_id]['data'][x] for x in time_added]
-						return jsonify({'result':{time_added[x]: data[x] for x in range(25) if x < len(time_added)}})
-					else: return jsonify({'result':False,'reason':'Sensor ID not found'})
-				else: return jsonify({'result':False, 'reason':'IP not found'})
-			else: return jsonify({'result':False,'reason':"'from' must be integer"})
+			try:
+				from = int(from)
+			except:
+				return jsonify({'result':False, 'reason':"'from' must be integer"})
+			ip_address = request.args['device_ip']
+			sensor_id = request.args['sensorId']
+			db = client['iotku']
+			collection = db['user']
+			doc = collection.find_one({'email':session['email']})
+			if ip_address in doc['device'].keys():
+				data_doc = db['device_data'].find_one({'_id':doc[ip_address]['id']})
+				if sensor_id in data_doc['sensorList']:
+					time_added = list(data_doc['sensorList'][sensor_id]['data'].keys())[request.args['from']:request.args['from']+25]
+					data = [data_doc['sensorList'][sensor_id]['data'][x] for x in time_added]
+					return jsonify({'result':{time_added[x]: data[x] for x in range(25) if x < len(time_added)}})
+				else: return jsonify({'result':False,'reason':'Sensor ID not found'})
+			else: return jsonify({'result':False, 'reason':'IP not found'})
 		else: return jsonify({'result':False,'reason':"'device_ip' entry, 'sensorId' entry, and/or 'from' entry not found in query"})
 	else: return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 #------------------/GET Data------------------------
