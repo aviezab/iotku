@@ -16,18 +16,6 @@ def index():
 def dashboard():
 	return render_template('dashboard.html')
 
-@app.route('/login')
-def do_login():
-	if request.form.get('password') and request.form.get('email'):
-		db = client['iotku']
-		collection = db['user']
-		doc = collection.find_one({"email":request.form['email'],"password":request.form['password']})
-		if doc:
-			session['logged_in'] = True
-			session['api_key'] = doc['api_key']
-			session['email'] = request.form['email']
-	return redirect(url_for('index'))
-	
 @app.route('/register', methods=['POST'])
 def do_register():
     if request.form['password'] and request.form['email']:
@@ -94,7 +82,16 @@ def do_login():
 				return jsonify({'result': True})
 			else:
 				return jsonify({'result': False})
-	return jsonify({'result': False,'reason': "Invalid type"})
+	elif request.form['password'] and request.form['email']:
+		db = client['iotku']
+		collection = db['user']
+		doc = collection.find_one({"email":request.form['email'],"password":request.form['password']})
+		if doc:
+			session['logged_in'] = True
+			session['api_key'] = doc['api_key']
+			session['email'] = request.form['email']
+		return redirect(url_for('index'))
+	return jsonify({'result': False,'reason': "Invalid format"})
 
 @app.route('/api/disconnect')
 def do_logout():
