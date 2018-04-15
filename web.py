@@ -1,12 +1,14 @@
 from flask import *
 from pymongo import MongoClient
 from redissession import RedisSessionInterface
+from flask_cors import CORS
 import os, hashlib
 
 client = MongoClient()
 app = Flask(__name__, static_url_path='/static')
 #Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
 app.session_interface = RedisSessionInterface()
+CORS(app)
 
 @app.route("/", methods=['GET'])
 def index():
