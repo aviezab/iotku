@@ -12,7 +12,7 @@ app.session_interface = RedisSessionInterface()
 def index():
 	if session.get('logged_in') and session.get('email'):
 		return render_template('dashboard.html')
-    else: 
+	else: 
 		return render_template('index.html')
 
 @app.route('/register', methods=['POST'])
