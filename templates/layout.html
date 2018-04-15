@@ -64,7 +64,7 @@
           </ul>
 
           <ul>
-            <h5>Active Devices</h5>
+            <h5>Active Devices <i class="fa fa-refresh" aria-hidden="true"></i></h5>
             {% for x in device %}
             <li><a href="/device?device_ip={{x[1]}}">{{x[0]}}</a></li>
             {% endfor %}
