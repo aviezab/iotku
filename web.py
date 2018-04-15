@@ -170,7 +170,7 @@ def get_sensor_data():
 	if session.get('logged_in') and session.get('email'):
 		if request.args.get('device_ip') and request.args.get('sensorId') and request.args.get('from'):
 			try:
-				from = int(from)
+				from_number = int(request.args['from'])
 			except:
 				return jsonify({'result':False, 'reason':"'from' must be integer"})
 			ip_address = request.args['device_ip']
