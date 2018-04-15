@@ -10,10 +10,11 @@ app.session_interface = RedisSessionInterface()
 
 @app.route("/", methods=['GET'])
 def index():
-    if not session.get('logged_in') and not session.get('email'):
-        return render_template('index.html')
-    else:
-        return render_template('dashboard.html', username=session['email'])
+    return render_template('index.html')
+
+@app.route("/dashboard", methods=['GET'])
+def dashboard():
+	return render_template('dashboard.html')
 
 @app.route('/register', methods=['POST'])
 def do_register():
