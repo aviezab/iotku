@@ -43,31 +43,43 @@ def device():
 		
 @app.route('/api/connect', methods=['POST'])
 def do_login():
-	content = request.get_json(silent=True)
-	if 'api_key' in content.keys():
-		try:
-			collection = client['iotku']['user']
-			api_key = content['api_key']
-			ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
-			doc = collection.find_one({'api_key':api_key})
-			if doc:
-				if not ip_address in doc['device'].keys():
-					mongoid = db['device_data'].insert({'sensorList':{}})
-					doc['device'][ip_address] = {'deviceName':ip_address,'id':mongoid}
-					collection.save(doc)
-				result = True
+	if request.is_json:
+		content = request.get_json(silent=True)
+		if 'api_key' in content.keys():
+			try:
+				collection = client['iotku']['user']
+				api_key = content['api_key']
+				ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+				doc = collection.find_one({'api_key':api_key})
+				if doc:
+					if not ip_address in doc['device'].keys():
+						mongoid = db['device_data'].insert({'sensorList':{}})
+						doc['device'][ip_address] = {'deviceName':ip_address,'id':mongoid}
+						collection.save(doc)
+					result = True
+				else:
+					result = False
+			except Exception as e:
+				print('Unknown error at do_login: ' + str(e))
+				reason = 'Unknown Error'
+				return jsonify({'result': False, 'reason': reason})
+			if result:
+				session['api_key'] = content['api_key']
+				return jsonify({'result': True})
 			else:
-				result = False
-		except Exception as e:
-			print('Unknown error at do_login: ' + str(e))
-			reason = 'Unknown Error'
-			return jsonify({'result': False, 'reason': reason})
-		if result:
-			session['api_key'] = content['api_key']
-			return jsonify({'result': True})
+				reason = 'Failed'
+				return jsonify({'result': False,'reason': reason})
+	elif request.form['password'] and request.form['email']:
+		db = client['iotku']
+		collection = db['user']
+		doc = collection.find_one({"email":request.form['email'],"password":request.form['password']})
+		if doc:
+			session['logged_in'] = True
+			session['api_key'] = doc['api_key']
+			session['email'] = request.form['email']
 		else:
-			reason = 'Failed'
-			return jsonify({'result': False,'reason': reason})
+			return jsonify({'result': False,'reason': "Failed"})
+	return jsonify({'result': False,'reason': "Invalid format"})
 			
 	elif 'email' in content.keys() and 'password' in content.keys():
 		email = content['email']
