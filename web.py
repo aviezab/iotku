@@ -98,7 +98,7 @@ def do_logout():
 	session.pop('email', None)
 	session.pop('api_key', None)
 	session['logged_in'] = False
-	if request.method == 'POST': return redirect(url_for('index'))
+	if request.method == 'GET': return redirect(url_for('index'))
 	else: return jsonify({'result': True})
 
 @app.route('/api/is_logged_in')
