@@ -1,10 +1,9 @@
 $(document).ready(function(){
     $('.btn-reload-devices').click(function(){
 		$.get( "/api/get_device_list", function(data) {
-			$('#device-list').empty();
-			var json = JSON.parse(data);
-			for(var k in json['result']) {
-				var li = '<li><a href="/device?device_ip=' + k[0] + '">' + k[1] + '</a></li>';
+			for(var k in data['result']) {
+				
+				var li = '<li><a href="/device?device_ip=' + data['result'][k][0] + '">' + data['result'][k][1] + '</a></li>';
 				$('#device-list').append(li);
 			}
 		});
