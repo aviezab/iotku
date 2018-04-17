@@ -17,28 +17,28 @@ def index():
 
 @app.route('/register', methods=['POST'])
 def register():
-    if request.form['password'] and request.form['email']:
-        db = client['iotku']
-        collection = db['user']
-        if not collection.find_one({"email":request.form['email']}):
-            collection.insert_one({"email":request.form['email'],
-                                "password":request.form['password'],
-                                "api_key":hashlib.md5(request.form['email'].encode('utf-8')).hexdigest(),
-                                "device":{}
-                                })
-            session['logged_in'] = True
-            session['email'] = request.form['email']
+	if request.form['password'] and request.form['email']:
+		db = client['iotku']
+		collection = db['user']
+		if not collection.find_one({"email":request.form['email']}):
+			collection.insert_one({"email":request.form['email'],
+								"password":request.form['password'],
+								"api_key":hashlib.md5(request.form['email'].encode('utf-8')).hexdigest(),
+								"device_list":{}
+								})
+			session['logged_in'] = True
+			session['email'] = request.form['email']
 			session['api_key'] = hashlib.md5(request.form['email'].encode('utf-8')).hexdigest()
 			return jsonify({'result': True})
 		return jsonify({'result': False,'reason':'An account with the same email exists'})
-    return jsonify({'result': False,'reason':'Invalid format'})
+	return jsonify({'result': False,'reason':'Invalid format'})
 
 @app.route('/device', methods=['GET'])
 def device():
-    if session.get('logged_in') and session.get('email'):
-        return render_template('device.html')
-    else:
-        return redirect(url_for('index'))
+	if session.get('logged_in') and session.get('email'):
+		return render_template('device.html')
+	else:
+		return redirect(url_for('index'))
 		
 #---------------------API---------------------------
 @app.route('/api/connect', methods=['POST'])
@@ -52,9 +52,9 @@ def connect():
 				ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
 				doc = collection.find_one({'api_key':api_key})
 				if doc:
-					if not ip_address in doc['device'].keys():
+					if not ip_address in doc['device_list'].keys():
 						mongo_id = db['device_data'].insert({'sensor_list':{}})
-						doc['device'][ip_address] = {'device_name':ip_address,'id':mongo_id}
+						doc['device_list'][ip_address] = {'device_name':ip_address,'id':mongo_id}
 						collection.save(doc)
 					session['api_key'] = content['api_key']
 					return jsonify({'result': True})
@@ -113,6 +113,7 @@ def post_data():
 					return jsonify({'result': False,'reason': 'Unexpected error. Try reconnecting to your account'})
 			else:
 				return jsonify({'result': False, 'reason': 'Make sure that \'data\' entry and \'sensor_id\' entry is in your JSON'})
+		return jsonify({'result': False,'reason': "Invalid format"})
 	else:
 		return jsonify({'result': False, 'reason': 'Not connected to any account'})
 #------------------/POST Data------------------------
@@ -139,9 +140,9 @@ def get_device_list():
 	if session.get('logged_in') and session.get('email'):
 		db = client['iotku']
 		doc = db['user'].find_one({'email':session['email']})
-		device_ip = [x for x in doc['device'].keys()]
-		device_name = [doc['device'][x]['device_name'] for x in device_ip]
-		device_list =  [{'device_ip':list(x)[0],'device_name':list(x)[1]} for x in zip(device_ip, device_name)]
+		device_ip = [x for x in doc['device_list'].keys()]
+		device_name = [doc['device_list'][x]['device_name'] for x in device_ip]
+		device_list = [{'device_ip':list(x)[0],'device_name':list(x)[1]} for x in zip(device_ip, device_name)]
 		return jsonify({'result':device_list})
 	else:
 		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
@@ -155,8 +156,8 @@ def get_sensor_list():
 			db = client['iotku']
 			collection = db['user']
 			doc = collection.find_one({'email':session['email']})
-			if ip_address in doc['device'].keys():
-				data_doc = db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})
+			if ip_address in doc['device_list'].keys():
+				data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
 				sensor_name = [x for x in data_doc['sensor_list'].keys()]
 				sensor_date = [data_doc['sensor_list'][x]['time_added'] for x in sensor_name]
 				sensor_list = [{'sensor_name':list(x)[0],'sensor_date':list(x)[1]} for x in zip(sensor_name, sensor_date)]
@@ -181,8 +182,8 @@ def get_sensor_data():
 			db = client['iotku']
 			collection = db['user']
 			doc = collection.find_one({'email':session['email']})
-			if ip_address in doc['device'].keys():
-				data_doc = db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})
+			if ip_address in doc['device_list'].keys():
+				data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
 				if sensor_id in data_doc['sensor_list']:
 					time_added = list(data_doc['sensor_list'][sensor_id]['data'].keys())[from_number:from_number+25]
 					data = [data_doc['sensor_list'][sensor_id]['data'][x] for x in time_added]
@@ -196,6 +197,23 @@ def get_sensor_data():
 	else:
 		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 
+@app.route('/api/get_sensor_data', methods=['GET'])
+def get_sensor_data():
+	if session.get('logged_in') and session.get('email'):
+		if request.args.get('device_ip') and request.args.get('sensor_id'):
+			ip_address = request.args['device_ip']
+			sensor_id = request.args['sensor_id']
+			db = client['iotku']
+			collection = db['user']
+			doc = collection.find_one({'email':session['email']})
+			if ip_address in doc['device_list'].keys():
+				data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
+				if sensor_id in data_doc['sensor_list']:
+					total_data = len(
+		else:
+			return jsonify({'result':False,'reason':"'device_ip' entry and/or 'sensor_id' entry not found in query"})
+	else:
+		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 #------------------/GET Data------------------------
 
 @app.route('/api/url', methods=['GET'])
@@ -206,9 +224,11 @@ def get_url_list():
 						'is_logged_in',
 						'get_logged_in_api_key',
 						'get_logged_in_email',
+						'post_data',
 						'get_device_list',
 						'get_sensor_list',
 						'get_sensor_data',
+						'get_sensor_data_total',
 						'get_url_list'
 					]
 	api_functions_url = {x: url_for(x) for x in api_functions}
