@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+import hashlib
 
 class Iotku:
 	def __init__(
