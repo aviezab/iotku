@@ -33,7 +33,7 @@ class Iotku:
                                 "api_key":hashlib.md5(email.encode('utf-8')).hexdigest(),
                                 "device_list":[]
 								})
-		id = inserted.inserted_id
+		_id = inserted.inserted_id
 		return User(_id)
 	
 class User(Iotku):
