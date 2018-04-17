@@ -38,6 +38,7 @@ class Iotku:
 								})
 		_id = inserted.inserted_id
 		return User(_id, self.user_list, self.device_list, self.sensor_list)
+
 	
 class User(Iotku):
 	def __init__(self, _id, user_list, device_list, sensor_list):
@@ -68,7 +69,7 @@ class User(Iotku):
 	def add_device(self, device_ip, device_name):
 		mongo_id = self.device_list.insert_one({"device_name":device_name, "device_ip":device_ip})
 		self.user_document["device_list"].append({"device_ip":device_ip,"mongo_id":mongo_id})
-		self.user_list.save(self.device_document)
+		self.user_list.save(self.user_document)
 		_id = mongo_id.inserted_id
 		return Device(_id, self.device_list, self.sensor_list)
 		
