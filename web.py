@@ -197,23 +197,23 @@ def get_sensor_data():
 	else:
 		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 
-@app.route('/api/get_sensor_data', methods=['GET'])
-def get_sensor_data():
-	if session.get('logged_in') and session.get('email'):
-		if request.args.get('device_ip') and request.args.get('sensor_id'):
-			ip_address = request.args['device_ip']
-			sensor_id = request.args['sensor_id']
-			db = client['iotku']
-			collection = db['user']
-			doc = collection.find_one({'email':session['email']})
-			if ip_address in doc['device_list'].keys():
-				data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
-				if sensor_id in data_doc['sensor_list']:
-					total_data = len(
-		else:
-			return jsonify({'result':False,'reason':"'device_ip' entry and/or 'sensor_id' entry not found in query"})
-	else:
-		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+# @app.route('/api/get_sensor_data', methods=['GET'])
+# def get_sensor_data():
+	# if session.get('logged_in') and session.get('email'):
+		# if request.args.get('device_ip') and request.args.get('sensor_id'):
+			# ip_address = request.args['device_ip']
+			# sensor_id = request.args['sensor_id']
+			# db = client['iotku']
+			# collection = db['user']
+			# doc = collection.find_one({'email':session['email']})
+			# if ip_address in doc['device_list'].keys():
+				# data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
+				# if sensor_id in data_doc['sensor_list']:
+					# total_data = len(
+		# else:
+			# return jsonify({'result':False,'reason':"'device_ip' entry and/or 'sensor_id' entry not found in query"})
+	# else:
+		# return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 #------------------/GET Data------------------------
 
 @app.route('/api/url', methods=['GET'])
