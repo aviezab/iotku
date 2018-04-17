@@ -67,9 +67,9 @@ class User(Iotku):
 		return device_list
 
 	def add_device(self, device_ip, device_name):
+		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		mongo_id = self.device_list.insert_one({"device_name":device_name, "device_ip":device_ip,"time_added":date})
 		_id = mongo_id.inserted_id
-		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		self.user_document["device_list"].append({"device_ip":device_ip,"mongo_id":_id})
 		self.user_list.save(self.user_document)
 		return Device(_id, self.device_list, self.sensor_list)
@@ -119,9 +119,9 @@ class Device(User):
 		return sensor_list
 		
 	def add_sensor(self, sensor_id, sensor_name):
+		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		mongo_id = self.sensor_list.insert_one({"sensor_id":sensor_id, "sensor_name":sensor_name,"time_added":date,"last_data_added_time":"","total_data_entry":0})
 		_id = mongo_id.inserted_id
-		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		self.device_document["sensor_list"].append({"sensor_id":sensor_id,"mongo_id":_id})
 		self.device_list.save(self.device_document)
 		return Sensor(_id, self.sensor_list)
