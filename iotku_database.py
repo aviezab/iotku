@@ -2,6 +2,10 @@ from pymongo import MongoClient
 import hashlib
 
 class Iotku:
+	_user_list = ""
+	_device_list = ""
+	_sensor_list = ""
+	
 	def __init__(
 					self,
 					client = MongoClient(),
@@ -15,6 +19,9 @@ class Iotku:
 		self.user_list = self.db[user_list]
 		self.device_list = self.db[device_list]
 		self.sensor_list = self.db[sensor_list]
+		_user_list = self.user_list
+		_device_list = self.device_list
+		_sensor_list = self.sensor_list
 		
 	def get_user_list(self):
 		return_list = [x for x in self.user_list.find({})]
@@ -39,7 +46,7 @@ class Iotku:
 class User(Iotku):
 	def __init__(self, _id):
 		self._id = _id
-		self.user_document = self.user_list.find_one({"_id":self._id})
+		self.user_document = super()._user_list.find_one({"_id":self._id})
 		self.email = self.user_document["email"]
 		self.password = self.user_document["password"]
 		
