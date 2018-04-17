@@ -12,13 +12,6 @@
   {% endblock %}
 </head>
 <body>
-  <script>
-  	$.get( "/api/logged_in_email", function(data) {
-		if (data.result == false) {
-			window.location.href = "http://dev.iotku.id/";
-		}
-	});
-  </script>
   <div class="dashboard">
     <nav class="navbar navbar-default">
       <div class="container-fluid">

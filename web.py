@@ -16,7 +16,7 @@ def index():
 		return render_template('index.html')
 
 @app.route('/register', methods=['POST'])
-def do_register():
+def register():
     if request.form['password'] and request.form['email']:
         db = client['iotku']
         collection = db['user']
@@ -28,20 +28,21 @@ def do_register():
                                 })
             session['logged_in'] = True
             session['email'] = request.form['email']
-    return redirect(url_for('index'))
+			session['api_key'] = hashlib.md5(request.form['email'].encode('utf-8')).hexdigest()
+			return jsonify({'result': True})
+		return jsonify({'result': False,'reason':'An account with the same email exists'})
+    return jsonify({'result': False,'reason':'Invalid format'})
 
 @app.route('/device', methods=['GET'])
 def device():
-    if session.get('logged_in') and session.get('email') and request.args.get('device_ip'):
-        if request.args.get('device_ip') in client['iotku']['user'].find_one({'email':session['email']})['device']:
-            return render_template('device.html', username=session.get('email'), device=[[client['iotku']['user'].find_one({'email':session['email']})['device'][x]['deviceName'],x] for x in client['iotku']['user'].find_one({'email':session['email']})['device'].keys()], sensor=[[x,client['iotku']['device_data'].find_one({'_id':client['iotku']['user'].find_one({'email':session['email']})['device'][request.args.get('device_ip')]['id']})['sensorList'][x]['time_added']] for x in client['iotku']['device_data'].find_one({'_id':client['iotku']['user'].find_one({'email':session['email']})['device'][request.args.get('device_ip')]['id']})['sensorList']])
-        else:
-            return render_template('devicenotfound.html', username=session['email'])
+    if session.get('logged_in') and session.get('email'):
+        return render_template('device.html')
     else:
         return redirect(url_for('index'))
 		
+#---------------------API---------------------------
 @app.route('/api/connect', methods=['POST'])
-def do_login():
+def connect():
 	if request.is_json:
 		content = request.get_json(silent=True)
 		if 'api_key' in content.keys():
@@ -52,22 +53,16 @@ def do_login():
 				doc = collection.find_one({'api_key':api_key})
 				if doc:
 					if not ip_address in doc['device'].keys():
-						mongoid = db['device_data'].insert({'sensorList':{}})
-						doc['device'][ip_address] = {'deviceName':ip_address,'id':mongoid}
+						mongo_id = db['device_data'].insert({'sensor_list':{}})
+						doc['device'][ip_address] = {'device_name':ip_address,'id':mongo_id}
 						collection.save(doc)
-					result = True
+					session['api_key'] = content['api_key']
+					return jsonify({'result': True})
 				else:
-					result = False
+					return jsonify({'result': False,'reason': 'Invalid API key'})
 			except Exception as e:
 				print('Unknown error at do_login: ' + str(e))
-				reason = 'Unknown Error'
-				return jsonify({'result': False, 'reason': reason})
-			if result:
-				session['api_key'] = content['api_key']
-				return jsonify({'result': True})
-			else:
-				reason = 'Failed'
-				return jsonify({'result': False,'reason': reason})
+				return jsonify({'result': False, 'reason': 'Unknown Error'})
 		elif 'email' in content.keys() and 'password' in content.keys():
 			email = content['email']
 			password = content['password']
@@ -80,47 +75,46 @@ def do_login():
 				session['email'] = request.form['email']
 				return jsonify({'result': True})
 			else:
-				return jsonify({'result': False})
-	elif request.form['password'] and request.form['email']:
-		db = client['iotku']
-		collection = db['user']
-		doc = collection.find_one({"email":request.form['email'],"password":request.form['password']})
-		if doc:
-			session['logged_in'] = True
-			session['api_key'] = doc['api_key']
-			session['email'] = request.form['email']
-		return redirect(url_for('index'))
+				return jsonify({'result': False,'reason':'Wrong email or password'})
 	return jsonify({'result': False,'reason': "Invalid format"})
 
 @app.route('/api/disconnect')
-def do_logout():
+def disconnect():
 	#Membuang session. {dev aviezab 2018.03.08}
 	session.pop('email', None)
 	session.pop('api_key', None)
 	session['logged_in'] = False
-	if request.method == 'GET': return redirect(url_for('index'))
-	else: return jsonify({'result': True})
+	if request.method == 'GET':
+		return redirect(url_for('index'))
+	else:
+		return jsonify({'result': True})
 
 @app.route('/api/is_logged_in')
 def is_logged_in():
 	if session.get('logged_in'):
 		return jsonify({'result': True})
-	else: return jsonify({'result': False})
+	else:
+		return jsonify({'result': False})
 	
 #------------------POST Data------------------------
 @app.route('/api/post', methods=['POST'])
 def post_data():
 	if session.get('api_key'):
-		content = request.get_json(silent=True)
-		if 'data' in content.keys() and 'sensorId' in content.keys():
-			try:
-				c.publish(subject='post', payload=bytes(session['api_key'] + ' , ' + request.environ.get('HTTP_X_REAL_IP',request.remote_addr) + ' , ' + content['sensorId'] + ' , ' + content['data'], 'utf-8'))
-				return jsonify({'result': True})
-			except Exception as e:
-				print('Error at post_data: ' + str(e))
-				return jsonify({'result': False,'reason': 'Unexpected error. Try reconnecting to your account.'})
-		else: return jsonify({'result': False, 'reason': 'Make sure that \'data\' entry and \'sensorId\' entry is in your JSON.'})
-	else: return jsonify({'result': False, 'reason': 'Not connected to any account.'})
+		if request.is_json:
+			content = request.get_json(silent=True)
+			if 'data' in content.keys() and 'sensor_id' in content.keys():
+				try:
+					ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+					data = session['api_key'] + ' , ' + ip_address + ' , ' + content['sensor_id'] + ' , ' + content['data']
+					c.publish(subject='post', payload=bytes(data, 'utf-8'))
+					return jsonify({'result': True})
+				except Exception as e:
+					print('Error at post_data: ' + str(e))
+					return jsonify({'result': False,'reason': 'Unexpected error. Try reconnecting to your account'})
+			else:
+				return jsonify({'result': False, 'reason': 'Make sure that \'data\' entry and \'sensor_id\' entry is in your JSON'})
+	else:
+		return jsonify({'result': False, 'reason': 'Not connected to any account'})
 #------------------/POST Data------------------------
 
 
@@ -130,22 +124,27 @@ def post_data():
 def get_logged_in_email():
 	if session.get('logged_in') and session.get('email'):
 		return jsonify({'result': session['email']})
-	else: return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+	else:
+		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 	
 @app.route('/api/logged_in_api_key', methods=['GET'])
 def get_logged_in_api_key():
 	if session.get('logged_in') and session.get('api_key'):
 		return jsonify({'result': session['api_key']})
-	else: return jsonify({'result':False,'reason':'Not connected to any account.'})
+	else:
+		return jsonify({'result':False,'reason':'Not connected to any account.'})
 	
 @app.route('/api/get_device_list', methods=['GET'])
 def get_device_list():
 	if session.get('logged_in') and session.get('email'):
 		db = client['iotku']
-		device_ip = [x for x in db['user'].find_one({'email':session['email']})['device'].keys()]
-		device_name = [db['user'].find_one({'email':session['email']})['device'][x]['deviceName'] for x in device_ip]
-		return jsonify({'result':[list(x) for x in zip(device_ip, device_name)]})
-	else: return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+		doc = db['user'].find_one({'email':session['email']})
+		device_ip = [x for x in doc['device'].keys()]
+		device_name = [doc['device'][x]['device_name'] for x in device_ip]
+		device_list =  [{'device_ip':list(x)[0],'device_name':list(x)[1]} for x in zip(device_ip, device_name)]
+		return jsonify({'result':device_list})
+	else:
+		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 
 @app.route('/api/get_sensor_list', methods=['GET'])
 def get_sensor_list():
@@ -157,39 +156,67 @@ def get_sensor_list():
 			collection = db['user']
 			doc = collection.find_one({'email':session['email']})
 			if ip_address in doc['device'].keys():
-				sensorName = [x for x in db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})['sensorList'].keys()]
-				sensorDate = [db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})['sensorList'][x]['time_added'] for x in sensorName]
-				sensorList = [list(x) for x in zip(sensorName, sensorDate)]
-				return jsonify({'result':sensorList})
-			else: return jsonify({'result':False,'reason':'Device IP not found'})
-		else: return jsonify({'result':False,'reason':"'device_ip' entry not found in JSON"})
-	else: return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+				data_doc = db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})
+				sensor_name = [x for x in data_doc['sensor_list'].keys()]
+				sensor_date = [data_doc['sensor_list'][x]['time_added'] for x in sensor_name]
+				sensor_list = [{'sensor_name':list(x)[0],'sensor_date':list(x)[1]} for x in zip(sensor_name, sensor_date)]
+				return jsonify({'result':sensor_list})
+			else:
+				return jsonify({'result':False,'reason':'Device IP not found'})
+		else:
+			return jsonify({'result':False,'reason':"'device_ip' entry not found in JSON"})
+	else:
+		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 
 @app.route('/api/get_sensor_data', methods=['GET'])
 def get_sensor_data():
 	if session.get('logged_in') and session.get('email'):
-		if request.args.get('device_ip') and request.args.get('sensorId') and request.args.get('from'):
+		if request.args.get('device_ip') and request.args.get('sensor_id') and request.args.get('from'):
 			try:
 				from_number = int(request.args['from'])
 			except:
 				return jsonify({'result':False, 'reason':"'from' must be integer"})
 			ip_address = request.args['device_ip']
-			sensor_id = request.args['sensorId']
+			sensor_id = request.args['sensor_id']
 			db = client['iotku']
 			collection = db['user']
 			doc = collection.find_one({'email':session['email']})
 			if ip_address in doc['device'].keys():
 				data_doc = db['device_data'].find_one({'_id':doc['device'][ip_address]['id']})
-				if sensor_id in data_doc['sensorList']:
-					time_added = list(data_doc['sensorList'][sensor_id]['data'].keys())[from_number:from_number+25]
-					data = [data_doc['sensorList'][sensor_id]['data'][x] for x in time_added]
-					return jsonify({'result':{time_added[x]: data[x] for x in range(25) if x < len(time_added)}})
-				else: return jsonify({'result':False,'reason':'Sensor ID not found'})
-			else: return jsonify({'result':False, 'reason':'IP not found'})
-		else: return jsonify({'result':False,'reason':"'device_ip' entry, 'sensorId' entry, and/or 'from' entry not found in query"})
-	else: return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+				if sensor_id in data_doc['sensor_list']:
+					time_added = list(data_doc['sensor_list'][sensor_id]['data'].keys())[from_number:from_number+25]
+					data = [data_doc['sensor_list'][sensor_id]['data'][x] for x in time_added]
+					return jsonify({'result':{time_added[x]: data[x] for x in range(len(time_added))}})
+				else:
+					return jsonify({'result':False,'reason':'Sensor ID not found'})
+			else:
+				return jsonify({'result':False, 'reason':'IP not found'})
+		else:
+			return jsonify({'result':False,'reason':"'device_ip' entry, 'sensor_id' entry, and/or 'from' entry not found in query"})
+	else:
+		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+
 #------------------/GET Data------------------------
 
+@app.route('/api/url', methods=['GET'])
+def get_url_list():
+	api_functions = [
+						'connect',
+						'disconnect',
+						'is_logged_in',
+						'get_logged_in_api_key',
+						'get_logged_in_email',
+						'get_device_list',
+						'get_sensor_list',
+						'get_sensor_data',
+						'get_url_list'
+					]
+	api_functions_url = {x: url_for(x) for x in api_functions}
+	return jsonify({'result':api_functions_url})
+
+#--------------------/API---------------------------
+
+	
 if __name__ == "__main__":
     app.secret_key = "secret key"
     app.run(debug=True,host='0.0.0.0', port=5000)
