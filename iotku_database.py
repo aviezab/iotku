@@ -25,7 +25,7 @@ class Iotku:
 		result = self.user_list.find_one(user_info)
 		if result:
 			_id = result["_id"]
-			return User(_id)
+			return User(_id, self.user_list, self.device_list, self.sensor_list)
 		else:
 			return None
 		
@@ -70,7 +70,7 @@ class User(Iotku):
 		self.user_document["device_list"].append({"device_ip":device_ip,"mongo_id":mongo_id})
 		self.user_list.save(self.device_document)
 		_id = mongo_id.inserted_id
-		return Device(_id, device_list, sensor_list)
+		return Device(_id, self.device_list, self.sensor_list)
 		
 	def remove_device(self, device_ip):
 		device_info = next((item for item in self.user_document["device_list"] if item["device_ip"] == device_ip), False)
@@ -87,7 +87,7 @@ class User(Iotku):
 		if device_info:
 			result = self.device_list.find_one({"_id":device_info["mongo_id"]})
 			_id = result["_id"]
-			return Device(_id, device_list, sensor_list)
+			return Device(_id, self.device_list, self.sensor_list)
 		else:
 			return False
 			
@@ -121,7 +121,7 @@ class Device(User):
 		self.device_document["sensor_list"].append({"sensor_ip":sensor_ip,"mongo_id":mongo_id})
 		self.device_list.save(self.device_document)
 		_id = mongo_id.inserted_id
-		return Sensor(_id, sensor_list)
+		return Sensor(_id, self.sensor_list)
 		
 	def remove_sensor(self, sensor_id):
 		sensor_info = next((item for item in self.device_document["device_list"] if item["sensor_id"] == sensor_id), False)
@@ -138,7 +138,7 @@ class Device(User):
 		if sensor_info:
 			result = self.sensor_list.find_one({"_id":sensor_info["mongo_id"]})
 			_id = result["_id"]
-			return Sensor(_id, sensor_list)
+			return Sensor(_id, self.sensor_list)
 		else:
 			return False
 	
