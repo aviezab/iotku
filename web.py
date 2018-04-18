@@ -57,7 +57,7 @@ def connect():
 		elif 'email' in content.keys() and 'password' in content.keys():
 			email = content['email']
 			password = content['password']
-			user = iotku.find_user(email=email, password=password})
+			user = iotku.find_user(email=email, password=password)
 			if user:
 				session['logged_in'] = True
 				session['api_key'] = user.api_key
@@ -162,8 +162,9 @@ def get_sensor_data():
 		if request.args.get('device_ip') and request.args.get('sensor_id') and request.args.get('from'):
 			try:
 				from_number = int(request.args['from'])
+				assert from_number > 0
 			except:
-				return jsonify({'result':False, 'reason':"'from' must be integer"})
+				return jsonify({'result':False, 'reason':"'from' must be a positive integer"})
 			ip_address = request.args['device_ip']
 			sensor_id = request.args['sensor_id']
 			user = iotku.find_user(email=session['email'])

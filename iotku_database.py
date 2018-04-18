@@ -134,7 +134,7 @@ class Device(User):
 			return False
 			
 	def find_sensor(self,sensor_id):
-		sensor_info = next((item for item in self.device_document["device_list"] if item["sensor_id"] == sensor_id), False)
+		sensor_info = next((item for item in self.device_document["sensor_list"] if item["sensor_id"] == sensor_id), False)
 		if sensor_info:
 			result = self.sensor_list.find_one({"_id":sensor_info["mongo_id"]})
 			_id = result["_id"]
