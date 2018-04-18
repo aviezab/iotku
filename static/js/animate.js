@@ -40,13 +40,14 @@ $(document).ready(function(){
 				  type: "POST",
 				  url: "/api/connect",
 				  contentType: "application/json",
+				  data: JSON.stringify({
+							"email": $("#login-email").val(),
+							"password": $("#login-password").val()
+						}),
 				  success: function(result){
 						if (result.result == true) {
 							window.location.href = "http://dev.iotku.id/dashboard";
 							  }}
-				}, data: {
-							"email": $("#login-email").val(),
-							"password": $("#login-password").val()
-						});
+				}});
     });
 });
