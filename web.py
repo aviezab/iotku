@@ -18,7 +18,7 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
 	if request.form['password'] and request.form['email']:
-		if not iotku.find_user({"email":request.form['email']}):
+		if not iotku.find_user(email=request.form['email']):
 			iotku.add_user(email=request.form['email'],password=request.form['password'])
 			session['logged_in'] = True
 			session['email'] = request.form['email']
