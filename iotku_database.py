@@ -20,8 +20,7 @@ class Iotku:
 		return_list = [x for x in self.user_list.find({})]
 		return return_list
 		
-	def find_user(self, user_info):
-		assert type(user_info) == type(dict())
+	def find_user(self, **kwargs):
 		result = self.user_list.find_one(user_info)
 		if result:
 			_id = result["_id"]
@@ -29,13 +28,10 @@ class Iotku:
 		else:
 			return None
 		
-	def add_user(self, email, password):
-		inserted = self.user_list.insert_one({
-								"email":email,
-                                "password":password,
-                                "api_key":hashlib.md5(email.encode('utf-8')).hexdigest(),
-                                "device_list":[]
-								})
+	def add_user(self, **doc):
+		doc["api_key"] = hashlib.md5(email.encode('utf-8')).hexdigest()
+		doc["device_list"] = []
+		inserted = self.user_list.insert_one(doc)
 		_id = inserted.inserted_id
 		return User(_id, self.user_list, self.device_list, self.sensor_list)
 
@@ -55,20 +51,21 @@ class User(Iotku):
 		self.__init__(self._id, self.user_list, self.device_list, self.sensor_list)
 		return True
 		
-	def change_user_info(self, user_info):
-		for x in user_info.keys():
-			self.user_document[x] = user_info[x]
+	def change_user_info(self, **kwargs):
+		user_info = kwargs
+		for key, value in user_info.iteritems():
+			self.user_document[key] = value
 		self.user_list.save(self.user_document)
 		self.reload()
 		return True
 		
 	def get_device_list(self):
-		device_list = self.user_document["device_list"]
+		device_list = [x["device_ip"] for x in self.user_document["device_list"]]
 		return device_list
 
 	def add_device(self, device_ip, device_name):
 		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		mongo_id = self.device_list.insert_one({"device_name":device_name, "device_ip":device_ip,"time_added":date})
+		mongo_id = self.device_list.insert_one({"device_name":device_name, "device_ip":device_ip,"time_added":date,"sensor_list":[]})
 		_id = mongo_id.inserted_id
 		self.user_document["device_list"].append({"device_ip":device_ip,"mongo_id":_id})
 		self.user_list.save(self.user_document)
@@ -107,9 +104,9 @@ class Device(User):
 		self.__init__(self._id)
 		return True
 		
-	def change_device_info(self, device_info):
-		for x in device_info.keys():
-			self.device_document[x] = device_info[x]
+	def change_device_info(self, **device_info):
+		for key, value in device_info.iteritems():
+			self.device_document[key] = value
 		self.device_list.save(self.device_document)
 		self.reload()
 		return True
@@ -120,7 +117,7 @@ class Device(User):
 		
 	def add_sensor(self, sensor_id, sensor_name):
 		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		mongo_id = self.sensor_list.insert_one({"sensor_id":sensor_id, "sensor_name":sensor_name,"time_added":date,"last_data_added_time":"","total_data_entry":0})
+		mongo_id = self.sensor_list.insert_one({"sensor_id":sensor_id, "sensor_name":sensor_name,"time_added":date,"last_data_added_time":"","total_data_entry":0,"data_collection":[]})
 		_id = mongo_id.inserted_id
 		self.device_document["sensor_list"].append({"sensor_id":sensor_id,"mongo_id":_id})
 		self.device_list.save(self.device_document)
@@ -136,7 +133,7 @@ class Device(User):
 		else:
 			return False
 			
-	def find_sensor():
+	def find_sensor(self,sensor_id):
 		sensor_info = next((item for item in self.device_document["device_list"] if item["sensor_id"] == sensor_id), False)
 		if sensor_info:
 			result = self.sensor_list.find_one({"_id":sensor_info["mongo_id"]})
@@ -159,9 +156,20 @@ class Sensor(Device):
 		self.__init__(self._id,self.sensor_list)
 		return True
 		
-	def change_sensor_info(self, sensor_info):
-		for x in sensor_info.keys():
-			self.sensor_document[x] = sensor_info[x]
+	def change_sensor_info(self, **sensor_info):
+		for key, value in device_info.iteritems():
+			self.sensor_document[key] = value
 		self.sensor_list.save(self.sensor_document)
 		self.reload()
 		return True
+		
+	def post_data(self, data_value):
+		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		data_entry = {"time_added":date,"data_value":data_value}
+		self.sensor_document["data_collection"].append(data_entry)
+		self.sensor_list.save(self.sensor_document)
+		
+	def get_data(self, get_from=0, to=-1):
+		data_list = self.sensor_document["data_collection"].sort(key=lambda item:item['time_added'], reverse=True)
+		return data_list[get_from:to]
+		

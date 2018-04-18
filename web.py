@@ -1,12 +1,12 @@
 from flask import *
-from pymongo import MongoClient
 from redissession import RedisSessionInterface
+from iotku_database import Iotku
 import os, hashlib
 
-client = MongoClient()
 app = Flask(__name__, static_url_path='/static')
 #Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
 app.session_interface = RedisSessionInterface()
+iotku = Iotku()
 
 @app.route("/", methods=['GET'])
 def index():
@@ -18,14 +18,8 @@ def index():
 @app.route('/register', methods=['POST'])
 def register():
 	if request.form['password'] and request.form['email']:
-		db = client['iotku']
-		collection = db['user']
-		if not collection.find_one({"email":request.form['email']}):
-			collection.insert_one({"email":request.form['email'],
-								"password":request.form['password'],
-								"api_key":hashlib.md5(request.form['email'].encode('utf-8')).hexdigest(),
-								"device_list":{}
-								})
+		if not iotku.find_user({"email":request.form['email']}):
+			iotku.add_user(email=request.form['email'],password=request.form['password'])
 			session['logged_in'] = True
 			session['email'] = request.form['email']
 			session['api_key'] = hashlib.md5(request.form['email'].encode('utf-8')).hexdigest()
@@ -47,15 +41,12 @@ def connect():
 		content = request.get_json(silent=True)
 		if 'api_key' in content.keys():
 			try:
-				collection = client['iotku']['user']
 				api_key = content['api_key']
 				ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
-				doc = collection.find_one({'api_key':api_key})
-				if doc:
-					if not ip_address in doc['device_list'].keys():
-						mongo_id = db['device_data'].insert({'sensor_list':{}})
-						doc['device_list'][ip_address] = {'device_name':ip_address,'id':mongo_id}
-						collection.save(doc)
+				user = iotku.find_user(api_key=api_key)
+				if user:
+					if not user.find_device(ip_address):
+						user.add_device(ip_address,ip_address)
 					session['api_key'] = content['api_key']
 					return jsonify({'result': True})
 				else:
@@ -66,12 +57,10 @@ def connect():
 		elif 'email' in content.keys() and 'password' in content.keys():
 			email = content['email']
 			password = content['password']
-			db = client['iotku']
-			collection = db['user']
-			doc = collection.find_one({"email":email,"password":password})
-			if doc:
+			user = iotku.find_user(email=email, password=password})
+			if user:
 				session['logged_in'] = True
-				session['api_key'] = doc['api_key']
+				session['api_key'] = user.api_key
 				session['email'] = request.form['email']
 				return jsonify({'result': True})
 			else:
@@ -138,10 +127,9 @@ def get_logged_in_api_key():
 @app.route('/api/get_device_list', methods=['GET'])
 def get_device_list():
 	if session.get('logged_in') and session.get('email'):
-		db = client['iotku']
-		doc = db['user'].find_one({'email':session['email']})
-		device_ip = [x for x in doc['device_list'].keys()]
-		device_name = [doc['device_list'][x]['device_name'] for x in device_ip]
+		user = iotku.find_user(email=session["email"])
+		device_ip = user.get_device_list()
+		device_name = [user.find_device(x).device_name for x in device_ip]
 		device_list = [{'device_ip':list(x)[0],'device_name':list(x)[1]} for x in zip(device_ip, device_name)]
 		return jsonify({'result':device_list})
 	else:
@@ -153,14 +141,13 @@ def get_sensor_list():
 	if session.get('logged_in') and session.get('email'):
 		if content['device_ip']:
 			ip_address = content['device_ip']
-			db = client['iotku']
-			collection = db['user']
-			doc = collection.find_one({'email':session['email']})
-			if ip_address in doc['device_list'].keys():
-				data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
-				sensor_name = [x for x in data_doc['sensor_list'].keys()]
-				sensor_date = [data_doc['sensor_list'][x]['time_added'] for x in sensor_name]
-				sensor_list = [{'sensor_name':list(x)[0],'sensor_date':list(x)[1]} for x in zip(sensor_name, sensor_date)]
+			user = iotku.find_user(email=session["email"])
+			device = user.find_device(ip_address)
+			if device:
+				sensor_id = device.get_sensor_list()
+				sensor_name = [device.find_sensor(x).sensor_name for x in sensor_id]
+				sensor_date = [device.find_sensor(x).time_added for x in sensor_id]
+				sensor_list = [{'sensor_id':list(x)[0],'sensor_name':list(x)[1],'time_added':list(x)[2]} for x in zip(sensor_id, sensor_name, sensor_date)]
 				return jsonify({'result':sensor_list})
 			else:
 				return jsonify({'result':False,'reason':'Device IP not found'})
@@ -179,15 +166,13 @@ def get_sensor_data():
 				return jsonify({'result':False, 'reason':"'from' must be integer"})
 			ip_address = request.args['device_ip']
 			sensor_id = request.args['sensor_id']
-			db = client['iotku']
-			collection = db['user']
-			doc = collection.find_one({'email':session['email']})
-			if ip_address in doc['device_list'].keys():
-				data_doc = db['device_data'].find_one({'_id':doc['device_list'][ip_address]['id']})
-				if sensor_id in data_doc['sensor_list']:
-					time_added = list(data_doc['sensor_list'][sensor_id]['data'].keys())[from_number:from_number+25]
-					data = [data_doc['sensor_list'][sensor_id]['data'][x] for x in time_added]
-					return jsonify({'result':{time_added[x]: data[x] for x in range(len(time_added))}})
+			user = iotku.find_user(email=session['email'])
+			device = user.find_device(ip_address)
+			if device:
+				sensor = device.find_sensor(sensor_id)
+				if sensor:
+					data_collection = sensor.get_data(from_number,from_number+25)
+					return jsonify({'result':data_collection})
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
