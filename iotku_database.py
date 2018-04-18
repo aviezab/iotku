@@ -45,6 +45,7 @@ class User(Iotku):
 		self._id = _id
 		self.user_document = self.user_list.find_one({"_id":self._id})
 		self.email = self.user_document["email"]
+		self.api_key = self.user_document["api_key"]
 		self.password = self.user_document["password"]
 		
 	def reload(self):

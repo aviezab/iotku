@@ -46,7 +46,7 @@ $(document).ready(function(){
 						}),
 				  success: function(result){
 						if (result.result == true) {
-							window.location.href = "http://dev.iotku.id/dashboard";
+							window.location.reload(true);
 							  }}
 				});
     });
