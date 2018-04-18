@@ -29,7 +29,7 @@ class Iotku:
 			return None
 		
 	def add_user(self, **doc):
-		doc["api_key"] = hashlib.md5(email.encode('utf-8')).hexdigest()
+		doc["api_key"] = hashlib.md5(doc["email"].encode('utf-8')).hexdigest()
 		doc["device_list"] = []
 		inserted = self.user_list.insert_one(doc)
 		_id = inserted.inserted_id
