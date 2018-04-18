@@ -20,7 +20,7 @@ class Iotku:
 		return_list = [x for x in self.user_list.find({})]
 		return return_list
 		
-	def find_user(self, **kwargs):
+	def find_user(self, **user_info):
 		result = self.user_list.find_one(user_info)
 		if result:
 			_id = result["_id"]
