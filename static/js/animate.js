@@ -48,6 +48,6 @@ $(document).ready(function(){
 						if (result.result == true) {
 							window.location.href = "http://dev.iotku.id/dashboard";
 							  }}
-				}});
+				});
     });
 });
