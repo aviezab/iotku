@@ -39,15 +39,14 @@ $(document).ready(function(){
 		$.ajax({
 				  type: "POST",
 				  url: "/api/connect",
-				  data: {
-							"email": $("#login-email").val(),
-							"password": $("#login-password").val()
-						},
 				  contentType: "application/json",
 				  success: function(result){
 						if (result.result == true) {
 							window.location.href = "http://dev.iotku.id/dashboard";
 							  }}
-				});
+				}, data: {
+							"email": $("#login-email").val(),
+							"password": $("#login-password").val()
+						});
     });
 });

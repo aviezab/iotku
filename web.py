@@ -39,32 +39,33 @@ def device():
 def connect():
 	if request.is_json:
 		content = request.get_json(silent=True)
-		if 'api_key' in content.keys():
-			try:
-				api_key = content['api_key']
-				ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
-				user = iotku.find_user(api_key=api_key)
+		if content:
+			if 'api_key' in content.keys():
+				try:
+					api_key = content['api_key']
+					ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
+					user = iotku.find_user(api_key=api_key)
+					if user:
+						if not user.find_device(ip_address):
+							user.add_device(ip_address,ip_address)
+						session['api_key'] = content['api_key']
+						return jsonify({'result': True})
+					else:
+						return jsonify({'result': False,'reason': 'Invalid API key'})
+				except Exception as e:
+					print('Unknown error at do_login: ' + str(e))
+					return jsonify({'result': False, 'reason': 'Unknown Error'})
+			elif 'email' in content.keys() and 'password' in content.keys():
+				email = content['email']
+				password = content['password']
+				user = iotku.find_user(email=email, password=password)
 				if user:
-					if not user.find_device(ip_address):
-						user.add_device(ip_address,ip_address)
-					session['api_key'] = content['api_key']
+					session['logged_in'] = True
+					session['api_key'] = user.api_key
+					session['email'] = request.form['email']
 					return jsonify({'result': True})
 				else:
-					return jsonify({'result': False,'reason': 'Invalid API key'})
-			except Exception as e:
-				print('Unknown error at do_login: ' + str(e))
-				return jsonify({'result': False, 'reason': 'Unknown Error'})
-		elif 'email' in content.keys() and 'password' in content.keys():
-			email = content['email']
-			password = content['password']
-			user = iotku.find_user(email=email, password=password)
-			if user:
-				session['logged_in'] = True
-				session['api_key'] = user.api_key
-				session['email'] = request.form['email']
-				return jsonify({'result': True})
-			else:
-				return jsonify({'result': False,'reason':'Wrong email or password'})
+					return jsonify({'result': False,'reason':'Wrong email or password'})
 	return jsonify({'result': False,'reason': "Invalid format"})
 
 @app.route('/api/disconnect')
