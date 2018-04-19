@@ -164,12 +164,15 @@ class Sensor(Device):
 		return True
 		
 	def post_data(self, data_value):
-		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		data_entry = {"time_added":date,"data_value":data_value}
+		date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+		data_entry = {"time_added":date[:-7],"_time_added":date,"data_value":data_value}
 		self.sensor_document["data_collection"].append(data_entry)
 		self.sensor_list.save(self.sensor_document)
 		
 	def get_data(self, get_from=0, to=-1):
-		data_list = self.sensor_document["data_collection"].sort(key=lambda item:item['time_added'], reverse=True)
-		return data_list[get_from:to]
+		time_added_list = sorted([x["_time_added"] for x in sensor.sensor_document["data_collection"]],reverse=True)
+		if time_added_list:
+			return [x for x in sensor.sensor_document["data_collection"] if x["_time_added"] in time_added_list]
+		else:
+			return []
 		
