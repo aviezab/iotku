@@ -62,7 +62,7 @@ def connect():
 				if user:
 					session['logged_in'] = True
 					session['api_key'] = user.api_key
-					session['email'] = request.form['email']
+					session['email'] = content['email']
 					return jsonify({'result': True})
 				else:
 					return jsonify({'result': False,'reason':'Wrong email or password'})

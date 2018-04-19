@@ -36,15 +36,14 @@ $(document).ready(function(){
         document.getElementById("registerForm").submit();
     });
 	$("#btn-login-submit").click(function () {
-		var email = $("#login-email").val();
-		var passwd = $("#login-password").val();
 		$.ajax({
 				  type: "POST",
 				  url: "/api/connect",
 				  contentType: "application/json",
+				  dataType: "json",
 				  data: JSON.stringify({
-							"email": email,
-							"password": passwd
+							"email": $("#login-email").val(),
+							"password": $("#login-password").val()
 						}),
 				  success: function(result){
 						if (result.result == true) {

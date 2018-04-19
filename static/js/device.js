@@ -2,7 +2,14 @@ $(document).ready(function(){
     $('.btn-reload-devices').click(function(){
 		$.get( "/api/get_device_list", function(data) {
 			for(var k in data['result']) {
-				var li = '<li><a href="/device?device_ip=' + data['result'][k][0] + '">' + data['result'][k][1] + '</a></li>';
+				var format = '<tr>' +
+								'<td><a href="' + data['result'][k]['sensor_id'] +'">' + data['result'][k]['sensor_name'] + '</a></td>' +
+								'<td>{{x[1]}}</td>' +
+								'<td>' +
+								  '<a href="#"><span class="glyphicon glyphicon-edit"></span></a>' +
+								  '<a href="#"><span class="glyphicon glyphicon-trash"></span></a>' +
+								'</td>' +
+							 '</tr>';
 				$('#device-list').append(li);
 			}
 		});
