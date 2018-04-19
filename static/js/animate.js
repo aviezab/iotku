@@ -36,18 +36,21 @@ $(document).ready(function(){
         document.getElementById("registerForm").submit();
     });
 	$("#btn-login-submit").click(function () {
+		var email = $("#login-email").val();
+		var passwd = $("#login-password").val();
 		$.ajax({
 				  type: "POST",
 				  url: "/api/connect",
 				  contentType: "application/json",
 				  data: JSON.stringify({
-							"email": $("#login-email").val(),
-							"password": $("#login-password").val()
+							"email": email,
+							"password": passwd
 						}),
 				  success: function(result){
 						if (result.result == true) {
 							window.location.reload(true);
-							  }}
+							  }
+						}
 				});
     });
 });

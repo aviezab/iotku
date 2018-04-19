@@ -35,7 +35,6 @@ class Iotku:
 		_id = inserted.inserted_id
 		return User(_id, self.user_list, self.device_list, self.sensor_list)
 
-	
 class User(Iotku):
 	def __init__(self, _id, user_list, device_list, sensor_list):
 		self.user_list = user_list
