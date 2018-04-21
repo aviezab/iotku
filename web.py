@@ -41,8 +41,6 @@ def device(device_id):
 	else:
 		return redirect(url_for('index'))
 
-@app.route('/sensor', methods=['GET'])
-
 #---------------------API---------------------------
 
 #---------------------CORE---------------------------
