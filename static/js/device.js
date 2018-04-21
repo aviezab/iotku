@@ -4,7 +4,7 @@ $(document).ready(function(){
 			for(var k in data['result']) {
 				var format = '<tr>' +
 								'<td><a href="' + data['result'][k]['sensor_id'] +'">' + data['result'][k]['sensor_name'] + '</a></td>' +
-								'<td>{{x[1]}}</td>' +
+								'<td>' + data['result'][k]['time_added'] + '</td>' +
 								'<td>' +
 								  '<a href="#"><span class="glyphicon glyphicon-edit"></span></a>' +
 								  '<a href="#"><span class="glyphicon glyphicon-trash"></span></a>' +
