@@ -324,7 +324,7 @@ def get_sensor_last_data_added_time():
 				if sensor:
 					last_time = sensor.get_last_data_added_time()
 					return last_time
-								else:
+				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
 				return jsonify({'result':False, 'reason':'IP not found'})
