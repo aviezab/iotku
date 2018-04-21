@@ -73,7 +73,7 @@ def connect():
 				user = iotku.find_user(email=email, password=password)
 				if user:
 					session['logged_in'] = True
-					session['api_key'] = user.api_key
+					session['api_key'] = user.get_api_key()
 					session['email'] = content['email']
 					return jsonify({'result': True})
 				else:
@@ -149,9 +149,9 @@ def get_device_name():
 	content = request.args
 	if session.get('logged_in') and session.get('email'):
 		if content.get('device_id'):
-			ip_address = content['device_id']
+			device_id = content['device_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				return jsonify({'result':device.get_device_name()})
 			else:
@@ -166,9 +166,9 @@ def get_device_time_added():
 	content = request.args
 	if session.get('logged_in') and session.get('email'):
 		if content.get('device_id'):
-			ip_address = content['device_id']
+			device_id = content['device_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				return jsonify({'result':device.get_time_added()})
 			else:
@@ -183,9 +183,9 @@ def get_device_total_sensor():
 	content = request.args
 	if session.get('logged_in') and session.get('email'):
 		if content.get('device_id'):
-			ip_address = content['device_id']
+			device_id = content['device_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				return jsonify({'result':device.get_total_sensor()})
 			else:
@@ -200,9 +200,9 @@ def get_device_sensor_list():
 	content = request.args
 	if session.get('logged_in') and session.get('email'):
 		if content.get('device_id'):
-			ip_address = content['device_id']
+			device_id = content['device_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				sensors = device.get_sensor_list()
 				sensor_list = [{'sensor_id':x.get_sensor_id(),'sensor_name':x.get_sensor_name(),'time_added':x.get_time_added()} for x in sensors]
@@ -221,10 +221,10 @@ def get_sensor_name():
 	content = request.args
 	if session.get('logged_in') and session.get('email'):
 		if content.get('device_id') and content.get('sensor_id'):
-			ip_address = content['device_id']
+			device_id = content['device_id']
 			sensor_id = content['sensor_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
@@ -243,10 +243,10 @@ def get_sensor_time_added():
 	content = request.args
 	if session.get('logged_in') and session.get('email'):
 		if content.get('device_id') and content.get('sensor_id'):
-			ip_address = content['device_id']
+			device_id = content['device_id']
 			sensor_id = content['sensor_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
@@ -269,10 +269,10 @@ def get_sensor_data():
 				assert from_number > 0
 			except:
 				return jsonify({'result':False, 'reason':"'from' must be a positive integer"})
-			ip_address = request.args['device_id']
+			device_id = request.args['device_id']
 			sensor_id = request.args['sensor_id']
 			user = iotku.find_user(email=session['email'])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
@@ -291,10 +291,10 @@ def get_sensor_data():
 def get_sensor_total_data_entry():
 	if session.get('logged_in') and session.get('email'):
 		if request.args.get('device_id') and request.args.get('sensor_id'):
-			ip_address = request.args['device_id']
+			device_id = request.args['device_id']
 			sensor_id = request.args['sensor_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
@@ -313,10 +313,10 @@ def get_sensor_total_data_entry():
 def get_sensor_last_data_added_time():
 	if session.get('logged_in') and session.get('email'):
 		if request.args.get('device_id') and request.args.get('sensor_id'):
-			ip_address = request.args['device_id']
+			device_id = request.args['device_id']
 			sensor_id = request.args['sensor_id']
 			user = iotku.find_user(email=session["email"])
-			device = user.find_device(ip_address)
+			device = user.find_device(device_id)
 			if device:
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
@@ -336,17 +336,17 @@ def post_sensor_data():
 	if session.get('api_key'):
 		if request.is_json:
 			content = request.get_json(silent=True)
-			if 'data' in content.keys() and 'sensor_id' in content.keys():
+			if 'data' in content.keys() and 'sensor_id' in content.keys() and 'device_id' in content.keys():
 				try:
-					ip_address = request.environ.get('HTTP_X_REAL_IP',request.remote_addr)
-					data = session['api_key'] + ' , ' + ip_address + ' , ' + content['sensor_id'] + ' , ' + content['data']
+					device_id = content['device_id']
+					data = session['api_key'] + ' , ' + device_id + ' , ' + content['sensor_id'] + ' , ' + content['data']
 					c.publish(subject='post', payload=bytes(data, 'utf-8'))
 					return jsonify({'result': True})
 				except Exception as e:
 					print('Error at post_sensor_data: ' + str(e))
 					return jsonify({'result': False,'reason': 'Unexpected error. Try reconnecting to your account'})
 			else:
-				return jsonify({'result': False, 'reason': 'Make sure that \'data\' entry and \'sensor_id\' entry is in your JSON'})
+				return jsonify({'result': False, 'reason': 'Make sure that \'data\' entry, \'device_id\', and \'sensor_id\' entry is in your JSON'})
 		return jsonify({'result': False,'reason': "Invalid format"})
 	else:
 		return jsonify({'result': False, 'reason': 'Not connected to any account'})
