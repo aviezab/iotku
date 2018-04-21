@@ -74,7 +74,7 @@ class User(Iotku):
 		return self.user_document["time_added"]
 
 	def get_device_list(self):
-		device_list = [Device(x["_id"],self.device_list,self.sensor_list) for x in self.device_list.find({"api_key":self.api_key})]
+		device_list = [Device(x["_id"],self.device_list,self.sensor_list) for x in self.device_list.find({"api_key":self.get_api_key()})]
 		return device_list
 
 	def find_device(self, device_id):
@@ -93,7 +93,7 @@ class User(Iotku):
 											"device_id":device_id,
 											"total_sensor":0,
 											"time_added":date,
-											"api_key":self.api_key
+											"api_key":self.get_api_key()
 											})
 			self.user_document = self.user_list.find_one({"_id":self._id})
 			self.user_document["total_device"] += 1
