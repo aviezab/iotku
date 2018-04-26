@@ -1,10 +1,10 @@
 from flask import Flask, request, session, render_template, url_for, redirect
 from redissession import RedisSessionInterface
-from api.views import api
+from api import views
 import os, hashlib
 
 app = Flask(__name__, static_url_path='/static')
-app.register_blueprint(api)
+app.register_blueprint(views.api)
 #Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
 app.session_interface = RedisSessionInterface()
 
@@ -13,7 +13,7 @@ def index():
 	if session.get('logged_in') and session.get('email'):
 		return render_template('dashboard.html')
 	else:
-		return render_template('index.html', api_connect=url_for(api.connect.__name__), api_register=url_for(api.register.__name__))
+		return render_template('index.html', api_connect=url_for(views.api.connect.__name__), api_register=url_for(views.api.register.__name__))
 
 @app.route('/device', methods=['GET'])
 def device_list():
