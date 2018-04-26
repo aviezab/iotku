@@ -38,7 +38,7 @@ $(document).ready(function(){
 	$("#btn-login-submit").click(function () {
 		$.ajax({
 				  type: "POST",
-				  url: "/api/connect",
+				  url: $("#register-from").attr("action"),
 				  contentType: "application/json",
 				  dataType: "json",
 				  data: JSON.stringify({

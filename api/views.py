@@ -330,36 +330,7 @@ def post_sensor_data():
 #---------------------MISC---------------------------
 @api.route('/api/url', methods=['GET'])
 def get_url_list():
-	api_functions = [
-						# CORE
-						'connect',
-						'disconnect',
-						'is_logged_in',
-
-						# USER
-						'get_user_email',
-						'get_user_api_key',
-						'get_user_time_added',
-						'get_user_total_device',
-						'get_device_list',
-
-						# DEVICE
-						'get_device_name',
-						'get_device_time_added',
-						'get_device_total_sensor',
-						'get_device_sensor_list',
-
-						# SENSOR
-						'get_sensor_name',
-						'get_sensor_time_added',
-						'get_sensor_data',
-						'get_sensor_total_data_entry',
-						'get_sensor_last_data_added_time',
-						'post_sensor_data',
-
-						# MISC
-						'get_url_list'
-					]
+	api_functions = [x for x in api.url_map.iter_rules()]
 	api_functions_url = {x: url_for(x) for x in api_functions}
 	return jsonify({'result':api_functions_url})
 #---------------------/MISC---------------------------

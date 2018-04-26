@@ -15,7 +15,7 @@
       <div id="panel-login">
         <a href="#" class="close-btn">&times;</a>
         <h2>Login to Account</h2>
-        <form class="" action="/api/connect" method="post">
+        <form class="" id="login-form" action="{{ api_connect }}" method="post">
           <input type="email" name="email" placeholder="Email" class="form-control" id="login-email">
           <input type="password" name="password" placeholder="Password" class="form-control" id="login-password">
           <button type="button" name="login" class="btn btn-iot" id="btn-login-submit">Login</button>
@@ -26,7 +26,7 @@
       <div id="panel-register">
         <a href="#" class="close-btn">&times;</a>
         <h2>Register an Account</h2>
-        <form class="" id="registerForm" action="/register" method="post">
+        <form class="" id="register-form" action="{{ api_register }}" method="post">
           <input type="email" name="email" id="email" placeholder="Email" class="form-control">
           <input type="password" name="password" id="password" placeholder="Password" class="form-control">
           <input type="password" name="confirm" id="confirm" placeholder="Confirm Password" class="form-control">
