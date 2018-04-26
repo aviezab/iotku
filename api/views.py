@@ -1,6 +1,6 @@
 from flask import Blueprint, request, session, jsonify, url_for
 from redissession import RedisSessionInterface
-from ..iotku_database import Iotku
+from .iotku_database import Iotku
 
 api = Blueprint('api', __name__)
 iotku = Iotku()
@@ -8,6 +8,20 @@ iotku = Iotku()
 #---------------------API---------------------------
 
 #---------------------CORE---------------------------
+@api.route('/register', methods=['POST'])
+def register():
+	if request.form['password'] and request.form['email']:
+		if not iotku.find_user(email=request.form['email']):
+			iotku.add_user(email=request.form['email'],password=request.form['password'])
+			session['logged_in'] = True
+			session['email'] = request.form['email']
+			session['api_key'] = hashlib.md5(request.form['email'].encode('utf-8')).hexdigest()
+			return jsonify({'result': True})
+		else:
+			return jsonify({'result': False,'reason':'An account with the same email exists'})
+	else: 
+		return jsonify({'result': False,'reason':'Invalid format'})
+
 @api.route('/api/connect', methods=['POST'])
 def connect():
 	if request.is_json:
