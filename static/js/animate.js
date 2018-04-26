@@ -33,12 +33,12 @@ $(document).ready(function(){
             alert("Passwords do not match.");
             return false;
         }
-        document.getElementById("registerForm").submit();
+        document.getElementById("register-form").submit();
     });
 	$("#btn-login-submit").click(function () {
 		$.ajax({
 				  type: "POST",
-				  url: $("#register-from").attr("action"),
+				  url: $("#login-from").attr("action"),
 				  contentType: "application/json",
 				  dataType: "json",
 				  data: JSON.stringify({
