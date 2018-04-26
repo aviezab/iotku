@@ -13,7 +13,7 @@ def index():
 	if session.get('logged_in') and session.get('email'):
 		return render_template('dashboard.html')
 	else:
-		return render_template('index.html', api_connect='api.' + url_for(views.connect.__name__), api_register='api.' + url_for(views.register.__name__))
+		return render_template('index.html', api_connect=url_for('api.' + views.connect.__name__), api_register=url_for('api.' + views.register.__name__))
 
 @app.route('/device', methods=['GET'])
 def device_list():
