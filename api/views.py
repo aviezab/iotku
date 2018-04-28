@@ -97,7 +97,7 @@ def user_api_key():
 def user_time_added():
 	if all(x in session.keys() for x in ["logged_in","email"]):
 		user = iotku.find_user(email=session["email"])
-		return jsonify({'result':user.time_added()})
+		return jsonify({'result':user.get_time_added()})
 	else:
 		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 
@@ -105,7 +105,7 @@ def user_time_added():
 def user_total_device():
 	if all(x in session.keys() for x in ["logged_in","email"]):
 		user = iotku.find_user(email=session["email"])
-		return jsonify({'result': user.total_device()})
+		return jsonify({'result': user.get_total_device()})
 	else:
 		return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
 
@@ -127,7 +127,7 @@ def add_device():
 	else:
 		return jsonify({'result': False, 'reason': 'Not connected to any account'})
 
-@api.route('/api/add_device', methods=['POST'])
+@api.route('/api/remove_device', methods=['POST'])
 def remove_device():
 	if all(x in session.keys() for x in ["logged_in","email"]):
 		content = request.get_json(silent=True)
@@ -435,12 +435,16 @@ def url_list():
 						'user_api_key',
 						'user_time_added',
 						'user_total_device',
+						'add_device',
+						'remove_device',
 						'device_list',
 
 						# DEVICE
 						'device_name',
 						'device_time_added',
 						'device_total_sensor',
+						'add_sensor',
+						'remove_sensor',
 						'device_sensor_list',
 
 						# SENSOR

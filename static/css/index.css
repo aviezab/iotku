@@ -140,3 +140,10 @@ body {
   margin: 0 auto;
   width: 100%;
 }
+
+@media screen and (max-width: 600px)
+{
+    #panel-login, #panel-register {
+        width: 100%;
+    }
+}

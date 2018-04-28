@@ -1,4 +1,5 @@
 body {
+  min-width: 540px;
   background-color: white;
   color: black;
 }
@@ -46,6 +47,10 @@ body {
   padding: 20px;
 }
 
+.invisible {
+  display: none;
+}
+
 /* The side navigation menu */
 #sidenav-big {
    height: 100%; /* 100% Full-height */
@@ -79,10 +84,10 @@ body {
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
    .sidenav {padding-top: 15px;}
-   .sidenav a {font-size: 18px;}
+   .dashboard {font-size: 18px;}
 }
 
-@media screen and (max-width: 450px) {
-  .dashboard {margin-left: 0 !important;}
+@media screen and (max-width: 767px) {
+  .dashboard {margin-left: 0 !important; font-size: 18px;}
   .sidenav {display: none;}
 }

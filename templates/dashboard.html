@@ -11,37 +11,49 @@
   </div>
 </div>
 <div class="container">
+  <div class="jumbotron" id="account-info">
+    <h4>Your Account <button class="fa fa-refresh button-icon" id="account-info-refresh" aria-hidden="true"></button></h4>
+    <hr>
+    <h5>Email:&nbsp;<span id="account-email"></span></h5>
+    <h5>API&nbsp;Key:&nbsp;<span id="account-api-key"></span></h5>
+    <h5>Registration&nbsp;Date:&nbsp;<span id="account-registration-date"></span></h5>
+    <h5>Total&nbsp;Device:&nbsp;<span id="account-total-device"></span></h5>
+  </div>
   <div class="row">
-    <div class="col-md-4 mx-auto">
-      <div class="card-dashboard">
+    <div class="col-md-4 mx-auto card-dashboard" id="devices">
+      <h4>Your Devices</h4>
+      <h4><button class="fa fa-refresh button-icon" id="device-list-refresh" aria-hidden="true"></button> <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#device-modal" id="add-device-button"></button></h4>
+      <hr>
+      <div id="device-list"></div>
+      <div class="invisible" id="device-list-empty">
         <img src="/static/images/connect.png" alt="connect">
-        <h4>Connect your Devices</h4>
-        <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
-        </p>
-        <button type="button" name="button" class="btn btn-iot">Connect Now!</button>
+        <p>It seems that you haven't added a device yet. Maybe it's time?</p>
       </div>
-    </div>
-    <div class="col-md-4 mx-auto">
-      <div class="card-dashboard">
-        <img src="/static/images/castle.png" alt="connect">
-        <h4>Build your Apps</h4>
-        <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
-        </p>
-        <button type="button" name="button" class="btn btn-iot">Connect Now!</button>
-      </div>
-    </div>
-    <div class="col-md-4 mx-auto">
-      <div class="card-dashboard">
-        <img src="/static/images/book.png" alt="connect">
-        <h4>Learn about IoT</h4>
-        <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
-        </p>
-        <button type="button" name="button" class="btn btn-iot">Connect Now!</button>
+      <div id="device-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add a device</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form class="" id="device-form" action="" method="post">
+                <input type="text" name="device-name" placeholder="Device Name" class="form-control" id="device-name">
+                <br>
+                <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="device-id">
+                <br>
+                <button type="submit" name="add-device" class="btn btn-iot" id="btn-device-submit">Submit</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+{% block script %}
+  {{ super() }}
+  <script type="text/javascript" src="/static/js/dashboard.js"></script>
 {% endblock %}
