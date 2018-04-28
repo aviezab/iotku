@@ -32,8 +32,7 @@ $(document).ready(function(){
         var password = $("#register-password").val();
         var confirmPassword = $("#register-password-confirm").val();
         if (password != confirmPassword) {
-            alert("Passwords do not match.");
-            return false;
+           $('#register-error').text("Passwords do not match.");
         }
         else {
             $.ajax({
@@ -48,6 +47,9 @@ $(document).ready(function(){
                 success: function(result){
                     if (result.result == true) {
                         window.location.reload(true);
+                    }
+                    else {
+                        $('#register-error').text(result.reason);
                     }
                 }
             });
@@ -67,6 +69,9 @@ $(document).ready(function(){
             success: function(result){
                 if (result.result == true) {
                     window.location.reload(true);
+                }
+                else {
+                    $('#login-error').text(result.reason);
                 }
             }
         });

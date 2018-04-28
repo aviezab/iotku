@@ -34,13 +34,6 @@
   height: auto;
 }
 
-.button-icon {
-  background-color: Transparent;
-  border: none;
-  outline: none;
-  color: black;
-}
-
 #add-device-button {
   color: red;
 }

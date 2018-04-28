@@ -1,5 +1,5 @@
 body {
-  min-width: 540px;
+  min-width: 320px;
   background-color: white;
   color: black;
 }
@@ -51,6 +51,13 @@ body {
   display: none;
 }
 
+.button-icon {
+  background-color: Transparent;
+  border: none;
+  outline: none;
+  color: black;
+}
+
 /* The side navigation menu */
 #sidenav-big {
    height: 100%; /* 100% Full-height */
@@ -86,6 +93,15 @@ body {
 }
 
 @media screen and (max-width: 767px) {
-  .dashboard {margin-left: 0 !important; font-size: 18px;}
+  html {
+    font-size: 9px;
+  }
+  nav {
+    font-size: 1.5rem;
+  }
+  nav .navbar-brand{
+    font-size: 2rem;
+  }
+  .dashboard {margin-left: 0 !important;}
   .sidenav {display: none;}
 }

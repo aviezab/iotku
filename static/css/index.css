@@ -39,10 +39,11 @@ body {
 .home > h1 {
   color: white;
   font-weight: 300;
-  font-size: 65px;
+  font-size: 3rem;
 }
 .home > h2 {
   color: rgba(255,255,255,0.85);
+  font-size: 2rem;
   margin-top: 2px;
 }
 .home > p {
@@ -136,6 +137,7 @@ body {
   position: absolute;
   color: rgba(255,255,255,0.65);
   text-align: center;
+  font-size: 16px;
   bottom: 0;
   margin: 0 auto;
   width: 100%;
@@ -143,6 +145,9 @@ body {
 
 @media screen and (max-width: 600px)
 {
+    html {
+      font-size: 12px;
+    }
     #panel-login, #panel-register {
         width: 100%;
     }

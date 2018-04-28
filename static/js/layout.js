@@ -11,3 +11,13 @@ function closeNav() {
     document.getElementById("main").style.marginLeft = "50px";
     document.getElementById("sidenav-small").style.width = "50px";
 }
+
+$(document).ready(function () {
+	$('#logout').click(function(){
+		$.get( disconnect_url, function(result) {
+			if (result.result == true){
+				window.location.reload(true);
+			}
+		});
+  });
+});

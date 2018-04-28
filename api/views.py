@@ -1,6 +1,7 @@
 from flask import Blueprint, request, session, jsonify, url_for
 from redissession import RedisSessionInterface
 from .iotku_database import Iotku
+import os, hashlib
 
 name = 'api'
 api = Blueprint(name, __name__)
