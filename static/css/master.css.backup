@@ -1,0 +1,384 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+.bg-1 {
+  background-image: linear-gradient(
+    to bottom,
+      rgba(0, 0, 0, 0.50),
+      rgba(0, 0, 0, 0.85)
+    ),
+    url(../images/pcb-background.jpg);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* width: 100%; */
+  height: 100vh;
+}
+.bg-2 {
+  background-image: linear-gradient(
+    to bottom,
+      rgba(0, 0, 0, 0.50),
+      rgba(0, 0, 0, 0.85)
+    ),
+    url(../images/ti-rede.jpg);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* width: 100%; */
+  height: 100vh;
+}
+.home {
+  padding-left: 5%;
+  padding-top: 28%;
+  padding-right: 20%;
+}
+.home > h1, p, h3 {
+  margin: 0;
+}
+.home > h1 {
+  color: white;
+  font-weight: 300;
+  font-size: 65px;
+}
+.home > h2 {
+  color: rgba(255,255,255,0.85);
+  margin-top: 2px;
+}
+.home > p {
+  color: rgba(255,255,255,0.6);
+}
+.work {
+  padding-left: 15%;
+  padding-top: 18%;
+  padding-right: 15%;
+}
+.work p {
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+
+.btn-iot {
+  margin-top: 15px;
+  background-color: rgb(224, 57, 74);
+  color: white;
+  font-weight: 600;
+  padding: 5px 45px;
+  border-radius: 8px;
+}
+.btn-iot:hover, .btn-iot:focus {
+  background-color: rgb(205, 32, 38);
+  color: white;
+}
+#panel-login, #panel-register {
+  position: fixed;
+  right: 0;
+  background: linear-gradient(
+    rgb(224, 57, 74),
+    rgb(224, 57, 74),
+    rgb(224, 57, 74),
+    rgba(224, 57, 74, 0.7)
+    );
+  height: 100%;
+  width: 25%;
+  padding: 3%;
+  padding-top: 15%;
+  display: none;
+  text-align: left;
+}
+#panel-login h2, #panel-register h2 {
+  color: white;
+  padding-bottom: 10px;
+}
+#panel-login .form-control, #panel-register .form-control {
+  margin-top: 10px;
+  background-color: transparent;
+  border: 2px solid transparent; /* change bootstrap border */
+  border-bottom: 2px solid rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.85);
+  padding-left: 2px;
+}
+#panel-login .form-control::placeholder, #panel-register .form-control::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+#panel-login .btn-iot, #panel-register .btn-iot {
+  display: inline-block;
+  padding: 5px 30px;
+  margin: 15px 3px;
+  background-color: rgba(255,255,255,1);
+  color: rgb(224, 57, 74);
+}
+#panel-login .btn-iot:hover, #panel-register .btn-iot:hover {
+  color: rgba(255,255,255,1);
+  background-color: transparent;
+  border: 1px solid white;
+}
+#panel-login a, #panel-register a {
+  /* text-decoration: none; */
+  color: rgba(255,255,255,0.55);
+  padding-left: 5px;
+}
+.close-btn {
+  position: absolute;
+  font-size: 40px;
+  top: 0;
+  right: 20px;
+  text-decoration: none;
+}
+.close-btn:hover, .close-btn:focus {
+  text-decoration: none;
+}
+#panel-login .close-btn:hover, #panel-register .close-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+.footer-text {
+  position: absolute;
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  bottom: 0;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* dashboard halaman */
+
+.navbar {
+   padding: 10px 5px; /* edit dari bootstrap */
+   margin-bottom: 0;
+}
+.side-nav {
+  position: fixed;
+  background-color: rgb(15, 15, 15);
+  color: white;
+  box-shadow: 3px 0 15px 0 rgba(0,0,0,0.5);
+  height: 100vh;
+  padding-top: 50px;
+  padding-right: 30px;
+}
+.side-nav h5 {
+  font-weight: bold;
+  font-size: 20px;
+  padding-bottom: 5px;
+}
+.side-nav ul {
+  list-style-type: none;
+  padding-bottom: 20px;
+}
+.side-nav li {
+  padding-bottom: 8px;
+}
+.side-nav li > a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 17px;
+  transition: 0.5s;
+}
+.side-nav li > a:hover {
+  color: rgb(224, 57, 74);
+  padding-left: 8px;
+  font-weight: 500;
+}
+.side-nav li:hover {
+  cursor: pointer;
+}
+.form-plus {
+  position: relative;
+  margin-bottom: 15px;
+}
+.form-plus input[type="text"] {
+  width: 150px;
+  background-color: transparent;
+}
+.form-plus input[type="submit"] {
+  width: 70px;
+  background-color: rgb(224, 57, 74);
+  border: none;
+  border-radius: 5px;
+  margin-top: 5px;
+  right: 0;
+}
+button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+.btn-plus {
+  border: none;
+  text-decoration: none;
+  display: block;
+  background-color: rgb(224, 57, 74);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto;
+  box-shadow: 3px 0 15px 0 rgba(0,0,0,0.5);
+  transition: 0.3s;
+}
+.btn-plus h2 {
+  margin: 0;
+  padding: 0;
+}
+.btn-plus:hover {
+  background-color: white;
+  color: rgb(224, 57, 74);
+  transform:scale(1.05,1.05);
+}
+.dashboard h1, h3 {
+  text-align: center;
+}
+.dashboard h1 {
+  font-weight: bold;
+}
+.dashboard h3 {
+  color: rgba(0, 0, 0, 0.7);
+}
+.card-dashboard {
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
+  padding: 30px;
+  background-color: rgb(247, 247, 247);
+  box-shadow: 0 5px 10px 0 rgba(0,0,0,0.3);
+  text-align: center;
+  transition: 0.5s;
+}
+.card-dashboard:hover {
+  box-shadow: 0 8px 12px 0 rgba(0,0,0,0.4);
+}
+.card-dashboard img {
+  display: block;
+  margin-left: 25%;
+  margin-right: 25%;
+  margin-bottom: 30px;
+  width: 50%;
+  height: auto;
+}
+/* halaman device */
+table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  margin-top: 30px;
+  font-size: 15px;
+}
+table a {
+  text-decoration: none;
+  color: rgb(180, 18, 34);
+}
+table a:hover {
+  color: rgb(250, 81, 98);
+}
+td, th {
+  border: 1px solid white;
+  text-align: center;
+  padding: 10px;
+}
+th {
+  background-color: rgb(224, 57, 74);
+  color: white;
+}
+tr {
+  background-color: rgb(242, 242, 242);
+  color: rgb(20, 20, 20);
+}
+tr:nth-child(even) {
+  background-color: rgb(230, 230, 230);
+  color: rgb(20, 20, 20);
+}
+
+@media screen and (max-width: 600px)
+{
+    #panel-login, #panel-register {
+        width: 100%;
+    }
+}
+
+/* dashboard profile */
+.bg-profile {
+  background-color: rgb(250, 250, 250);
+  max-height: 2000px;
+}
+.bg-content {
+  width: 70%;
+  /* height: 590px; */
+  max-height: 2000px;
+  margin: 0 auto;
+  background-color: rgb(255, 255, 255);
+}
+.bg-content > .btn-edit {
+  margin-top: 15px;
+  margin-left: 80%;
+}
+.header-profile {
+  padding: 15px 10px;
+  margin-left: 10%;
+  margin-right: 5%;
+}
+.header-profile #gray {
+  color: rgb(176, 176, 176);
+}
+.header-profile h3 {
+  text-align: left;
+  color: rgb(223, 62, 62);
+}
+.header-profile p {
+  text-align: left;
+  color: rgb(231, 106, 106);
+}
+.header-profile .btn-edit {
+  margin-left: 15px;
+}
+.btn-generate {
+  background-color: transparent;
+  color: rgb(255, 115, 0);
+  border: 2px solid rgb(255, 115, 0);
+  border-radius: 15px;
+  margin-top: 5px;
+  padding: 2px 20px;
+}
+.btn-generate:hover, .btn-generate:focus {
+  color: rgb(255, 174, 106);
+  border: 2px solid rgb(255, 174, 106);
+}
+.btn-edit {
+  background-color: transparent;
+  color: rgb(170, 170, 170);
+  border: 2px solid rgb(170, 170, 170);
+  border-radius: 15px;
+  margin-top: 5px;
+  padding: 2px 20px;
+}
+.btn-edit:hover, .btn-edit:focus {
+  color: rgb(200, 200, 200);
+  border: 2px solid rgb(200, 200, 200);
+}
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+.container-profile {
+  margin-left: 5%;
+}
+.total-data p {
+  font-size: 25px;
+  font-weight: bold;
+  color: rgb(255, 174, 106);
+  text-align: center;
+}
+.total-data h2 {
+  color: rgb(223, 62, 62);
+}
+.activity h2 {
+  color: rgb(223, 62, 62);
+}
+.activity p {
+  color: rgb(116, 116, 116);
+  font-size: 20px;
+  padding-bottom: 5px;
+}
+>>>>>>> ca85cc4f327bebdecec107d0832e892c97d3856c

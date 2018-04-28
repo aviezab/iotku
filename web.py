@@ -22,6 +22,13 @@ def device_list():
 	else:
 		return redirect(url_for('index'))
 
+@app.route('/profile', methods=['GET'])
+def profile():
+	if session.get('logged_in') and session.get('email'):
+		return render_template('profile.html')
+	else:
+		return redirect(url_for('index'))
+
 @app.route('/device/<device_id>', methods=['GET'])
 def device(device_id):
 	if session.get('logged_in') and session.get('email'):
