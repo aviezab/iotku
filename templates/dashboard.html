@@ -19,7 +19,7 @@
     <h5>Registration&nbsp;Date:&nbsp;<span id="account-registration-date"></span></h5>
     <h5>Total&nbsp;Device:&nbsp;<span id="account-total-device"></span></h5>
   </div>
-  <div class="row">
+  <div class="row" id="widget-list">
     <div class="col-md-4 mx-auto card-dashboard" id="devices">
       <h4>Your Devices</h4>
       <h5><span id="device-list-error"></span></h5>
@@ -31,122 +31,139 @@
       <div id="device-list">
 
       </div>
-      <div class="invisible" id="device-info">
-        <h5 style="text-align: center;">Device&nbsp;ID&nbsp;</h5>
-        <span class="device-id"></span>
-        <hr>
-        <h5 style="text-align: center;">Device&nbsp;Name&nbsp;</h5>
-        <span class="device-name"></span>
-        <hr>
-        <h5 style="text-align: center;">Time&nbsp;Added&nbsp;</h5>
-        <span class="device-time-added"></span>
-        <hr>
-        <h5 style="text-align: center;">Total&nbsp;Sensor&nbsp;</h5>
-        <span class="device-total-sensor"></span>
-      </div>
-      <div class="invisible" id="device-delete-prompt">
-        <div class="device-delete text-center">
-          <h5>Are you sure you want to remove this device?</h5>
-          <h5><span class="device-delete-error"></span></h5>
-          <div class="btn-group mx-auto">
-            <button onclick="deviceDeletePromptYes(this)" class="btn btn-primary device-delete-yes">Yes</button>
-            <button onclick="deviceDeletePromptNo(this)" class="btn btn-primary device-delete-no">No</button>
-          </div>
-        </div>
-      </div>
       <div class="invisible" id="device-list-empty">
         <img src="/static/images/connect.png" alt="connect">
         <p>It seems that you haven't added a device yet. Maybe it's time?</p>
-      </div>
-      <div id="device-form-modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Add a device</h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-              <h5><span id="device-form-error"></span></h5>
-              <form class="" id="device-form" action="" method="post">
-                <input type="text" name="device-form-name" placeholder="Device Name" class="form-control" id="device-form-name">
-                <br>
-                <input type="text" name="device-form-id" placeholder="Device ID" class="form-control" id="device-form-id">
-                <br>
-                <button type="submit" name="add-device" class="btn btn-iot" id="btn-device-submit">Submit</button>
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
     <div class="col-md-4 mx-auto card-dashboard" id="sensors">
       <h4>Your Sensors</h4>
       <h5><span id="sensor-list-error"></span></h5>
       <h4>
-        <form class="btn-group" id="get-sensor-list">
-          <input type="text" name="device-form-id" placeholder="Device ID" class="form-control" id="get-sensor-list-device-id">
-          <button type="submit" class="fa fa-refresh button-icon" id="sensor-list-refresh" aria-hidden="true"></button>
-        </form>
-        <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#sensor-modal" id="add-sensor-button"></button>
+        <div class="btn-group">
+          <form class="btn-group" id="get-sensor-list" onsubmit="getSensorListFormSubmit(event)">
+            <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="get-sensor-list-device-id" required>
+            <button type="submit" class="fa fa-refresh button-icon" id="sensor-list-refresh" aria-hidden="true"></button>
+          </form>
+          <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#sensor-modal" id="add-sensor-button"></button>
+        </div>
       </h4>
       <hr>
       <div id="sensor-list">
 
       </div>
-      <div class="invisible" id="sensor-info">
-        <h5 style="text-align: center;">Sensor&nbsp;ID&nbsp;</h5>
-        <span class="sensor-id"></span>
-        <hr>
-        <h5 style="text-align: center;">Sensor&nbsp;Name&nbsp;</h5>
-        <span class="sensor-name"></span>
-        <hr>
-        <h5 style="text-align: center;">Time&nbsp;Added&nbsp;</h5>
-        <span class="sensor-time-added"></span>
-        <hr>
-<!--         <h5 style="text-align: center;">Total&nbsp;App&nbsp;</h5>
-        <span class="sensor-total-sensor"></span> -->
-      </div>
-      <div class="invisible" id="sensor-delete-prompt">
-        <div class="sensor-delete text-center">
-          <h5>Are you sure you want to remove this sensor?</h5>
-          <h5><span class="sensor-delete-error"></span></h5>
-          <div class="btn-group mx-auto">
-            <button onclick="sensorDeletePromptYes(this)" class="btn btn-primary sensor-delete-yes">Yes</button>
-            <button onclick="sensorDeletePromptNo(this)" class="btn btn-primary sensor-delete-no">No</button>
-          </div>
-        </div>
-      </div>
       <div class="invisible" id="sensor-list-empty">
         <img src="/static/images/castle.png" alt="connect">
         <p>Your device doesn't have a sensor. <br> Well, what are you waiting for?</p>
       </div>
-      <div id="sensor-modal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Add a sensor</h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-              <h5><span id="sensor-form-error"></span></h5>
-              <form class="" id="sensor-form" action="" method="post">
-                <input type="text" name="sensor-form-device-id" placeholder="Device ID" class="form-control" id="sensor-form-device-id">
-                <br>
-                <input type="text" name="sensor-form-name" placeholder="Sensor Name" class="form-control" id="sensor-form-name">
-                <br>
-                <input type="text" name="sensor-form-id" placeholder="Sensor ID" class="form-control" id="sensor-form-id">
-                <br>
-                <button type="submit" name="add-sensor" class="btn btn-iot" id="btn-sensor-submit">Submit</button>
-              </form>
-            </div>
+    </div>
+  </div>
+</div>
+
+<!-- DEVICE -->
+<div id="device-form-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add a device</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h5><span id="device-form-error"></span></h5>
+        <form class="" id="device-form" action="" onsubmit="deviceAddFormSubmit(event)">
+          <div class="form-group">
+            <label for="device-form-name">Device Name</label>
+            <input type="text" placeholder="Device Name" class="form-control" id="device-form-name" required>
           </div>
-        </div>
+          <div class="form-group">
+            <label for="device-form-id">Device ID</label>
+            <input type="text" placeholder="Device ID" class="form-control" id="device-form-id" required>
+          </div>
+          <button type="submit" name="add-device" class="btn btn-iot" id="btn-device-submit">Submit</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
+<div class="invisible" id="device-info">
+  <h5 style="text-align: center;">Device&nbsp;ID&nbsp;</h5>
+  <span class="device-id">null</span>
+  <hr>
+  <h5 style="text-align: center;">Device&nbsp;Name&nbsp;</h5>
+  <span class="device-name">null</span>
+  <hr>
+  <h5 style="text-align: center;">Time&nbsp;Added&nbsp;</h5>
+  <span class="device-time-added">null</span>
+  <hr>
+  <h5 style="text-align: center;">Total&nbsp;Sensor&nbsp;</h5>
+  <a href="javascript:void(0)" onclick="$('#get-sensor-list-device-id').val($('.device-id').first().text()); getSensorListFormSubmit(event);" class="device-total-sensor">null</a>
+</div>
+<div class="invisible" id="device-delete-prompt">
+  <div class="device-delete text-center">
+    <h5>Are you sure you want to remove this device?</h5>
+    <h5><span class="device-delete-error"></span></h5>
+    <div class="btn-group mx-auto">
+      <button onclick="deviceDeletePromptYes(this)" class="btn btn-primary device-delete-yes">Yes</button>
+      <button onclick="deviceDeletePromptNo(this)" class="btn btn-primary device-delete-no">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- SENSOR -->
+<div id="sensor-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add a sensor</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h5><span id="sensor-form-error"></span></h5>
+        <form class="" id="sensor-form" action="" method="post" onsubmit="sensorAddFormSubmit(event)">
+          <div class="form-group">
+            <label for"sensor-form-device-id">Device ID</label>
+            <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="sensor-form-device-id" required>
+          </div>
+          <div class="form-group">
+            <label for="sensor-form-name">Sensor Name</label>
+            <input type="text" placeholder="Sensor Name" class="form-control" id="sensor-form-name" required>
+          </div>
+          <div class="form-group">
+            <label for="sensor-form-id">Sensor ID</label>
+            <input type="text" placeholder="Sensor ID" class="form-control" id="sensor-form-id" required>
+          </div>
+          <button type="submit" class="btn btn-iot" id="btn-sensor-submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="invisible" id="sensor-info">
+  <h5 style="text-align: center;">Sensor&nbsp;ID&nbsp;</h5>
+  <span class="sensor-id">null</span>
+  <hr>
+  <h5 style="text-align: center;">Sensor&nbsp;Name&nbsp;</h5>
+  <span class="sensor-name">null</span>
+  <hr>
+  <h5 style="text-align: center;">Time&nbsp;Added&nbsp;</h5>
+  <span class="sensor-time-added">null</span>
+  <!-- <hr> -->
+  <!-- <h5 style="text-align: center;">Total&nbsp;App&nbsp;</h5>
+  <span class="sensor-total-sensor"></span> -->
+</div>
+<div class="invisible" id="sensor-delete-prompt">
+  <div class="sensor-delete text-center">
+    <h5>Are you sure you want to remove this sensor?</h5>
+    <h5><span class="sensor-delete-error"></span></h5>
+    <div class="btn-group mx-auto">
+      <button onclick="sensorDeletePromptYes(this)" class="btn btn-primary sensor-delete-yes">Yes</button>
+      <button onclick="sensorDeletePromptNo(this)" class="btn btn-primary sensor-delete-no">No</button>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 {% block script %}
   {{ super() }}

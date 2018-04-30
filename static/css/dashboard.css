@@ -11,14 +11,14 @@
 }
 
 .card-dashboard {
-/*  height: 400px;*/
+  /*height: auto;*/
   margin-top: 20px;
   padding: 30px;
   color: black;
   background-color: rgb(247, 247, 247);
   box-shadow: 0 5px 10px 0 rgba(0,0,0,0.3);
   /*text-align: center;*/
-  transition: 0.5s;
+  transition: 2s;
 }
 
 .card-dashboard:hover {
@@ -36,6 +36,18 @@
 
 .dropdown-menu {
   padding: 10px;
+}
+.popover{
+  max-width: 30vw;
+  z-index: 0;
+}
+
+.popover:not(.show) {
+  display: none;
+}
+
+#widget-list {
+  align-items: flex-start;
 }
 
 #device-list-empty {

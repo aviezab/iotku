@@ -3,18 +3,24 @@ var delete_device_id;
 var sensor_device_id;
 var delete_sensor_id;
 
+function hidePopover() {
+	$(previous_popover).popover('enable');
+	$(previous_popover).popover('hide');
+	$(previous_popover).popover('disable');
+	previous_popover = null;
+}
 
 function accountInfoRefresh() {
-	$.get( user_email_url, function(data) {
+	$.get( window.user_email_url, function(data) {
 		$("#account-email").text(data.result);
 	});
-	$.get( user_api_key_url, function(data) {
+	$.get( window.user_api_key_url, function(data) {
 		$("#account-api-key").text(data.result);
 	});
-	$.get( user_time_added_url, function(data) {
+	$.get( window.user_time_added_url, function(data) {
 		$("#account-registration-date").text(data.result);
 	});
-	$.get( user_total_device_url, function(data) {
+	$.get( window.user_total_device_url, function(data) {
 		$("#account-total-device").text(data.result);
 	});
 }
@@ -36,24 +42,19 @@ function deviceListRefresh() {
 			}
 		}
 		else if (result.length == 0) {
+			$('#device-list-error').text('');
 			$('#device-list-empty').removeClass('invisible');
 		}
 		else {
+			$('#device-list-empty').addClass('invisible');
 			$('#device-list-error').text('Error: ' + data.reason);
 		}
 	});
 }
 
 function deviceInfo(element) {
-	if (previous_popover == element) {
-		$(element).popover('enable');
-		$(element).popover('toggle');
-		$(element).popover('disable');
-	}
-	else {
-		$(previous_popover).popover('enable');
-		$(previous_popover).popover('hide');
-		$(previous_popover).popover('disable');
+	hidePopover();
+	if (previous_popover != element) {
 		$(element).popover({
 			placement:'top',
 			html:true,
@@ -73,7 +74,7 @@ function deviceInfo(element) {
 			}
 		});
 		$(element).popover('enable');
-		$(element).popover('show');
+		$(element).popover('toggle');
 		$(element).popover('disable');
 		previous_popover = $(element);
 	}
@@ -81,15 +82,8 @@ function deviceInfo(element) {
 
 function deviceDeletePrompt(element) {
 	delete_device_id = $(element).attr('data-device-id');
-	if (previous_popover == element) {
-		$(element).popover('enable');
-		$(element).popover('toggle');
-		$(element).popover('disable');
-	}
-	else {
-		$(previous_popover).popover('enable');
-		$(previous_popover).popover('hide');
-		$(previous_popover).popover('disable');
+	hidePopover();
+	if (previous_popover != element) {
 		$(element).popover({
 			placement:'top',
 			html:true,
@@ -98,13 +92,14 @@ function deviceDeletePrompt(element) {
 			}
 		});
 		$(element).popover('enable');
-		$(element).popover('show');
+		$(element).popover('toggle');
 		$(element).popover('disable');
 		previous_popover = $(element);
 	}
 }
 
 function deviceDeletePromptYes(element) {
+	hidePopover();
 	$.ajax({
 		type: "POST",
 		url: remove_device_url,
@@ -115,7 +110,7 @@ function deviceDeletePromptYes(element) {
 		}),
 		success: function(result){
 			if (result.result == true) {
-				window.location.reload(true);
+				deviceListRefresh();
 			}
 			else {
 				$(element).parents('.device-delete').find('.device-delete-error').text(result.reason);
@@ -125,55 +120,66 @@ function deviceDeletePromptYes(element) {
 }
 
 function deviceDeletePromptNo(element){
-	$(previous_popover).popover('enable');
-	$(previous_popover).popover('hide');
-	$(previous_popover).popover('disable');
-	previous_popover = null;
+	hidePopover();
 	delete_device_id = null;
 }
 
-function sensorInfo(element) {
-	if (previous_popover == element) {
-		$(element).popover('enable');
-		$(element).popover('toggle');
-		$(element).popover('disable');
-	}
-	else {
-		$(previous_popover).popover('enable');
+function sensorListRefresh() {
+	$.get( device_sensor_list_url, {device_id: sensor_device_id}, function(data) {
 		$(previous_popover).popover('hide');
-		$(previous_popover).popover('disable');
+		$('#sensor-list').html('');
+		result = data['result']
+		if (result.length > 0) {
+			$('#sensor-list-error').text('');
+			$('#sensor-list-empty').addClass('invisible');
+			for(var k in data['result']) {
+				var format = '<div class="row">' + 
+				'<button onclick="sensorInfo(this)" type="button" class="btn button-icon sensor" data-sensor-id="' + result[k]['sensor_id']  + '">' + result[k]['sensor_name'] + '</button>' + 
+				'<button onclick="sensorDeletePrompt(this)" type="button" class="btn button-icon sensor-delete" data-sensor-id="' + result[k]['sensor_id']  + '">&times;</button>' + 
+				'</div>';
+				$('#sensor-list').append(format);
+			}
+		}
+		else if (result.length == 0) {
+			$('#sensor-list-error').text('');
+			$('#sensor-list-empty').removeClass('invisible');
+		}
+		else {
+			$('#sensor-list-empty').addClass('invisible');
+			$('#sensor-list-error').text('Error: ' + data.reason);
+		}
+	});
+}
+
+function sensorInfo(element) {
+	hidePopover();
+	if (previous_popover != element) {
 		$(element).popover({
 			placement:'top',
 			html:true,
 			content:function(){
 				var sensor_id = $(element).attr('data-sensor-id');
 				$(".sensor-id").text(sensor_id);
-				$.get( sensor_name_url, {sensor_id: sensor_id, device_id: device_id}, function(data) {
+				$.get( sensor_name_url, {sensor_id: sensor_id, device_id: sensor_device_id}, function(data) {
 					$(".sensor-name").text(data.result);
 				});
-				$.get( sensor_time_added_url, {sensor_id: sensor_id, device_id: device_id}, function(data) {
+				$.get( sensor_time_added_url, {sensor_id: sensor_id, device_id: sensor_device_id}, function(data) {
 					$(".sensor-time-added").text(data.result);
 				});
 				return $("#sensor-info").html();
 			}
 		});
 		$(element).popover('enable');
-		$(element).popover('show');
+		$(element).popover('toggle');
 		$(element).popover('disable');
 		previous_popover = $(element);
 	}
 }
+
 function sensorDeletePrompt(element) {
 	delete_sensor_id = $(element).attr('data-sensor-id');
-	if (previous_popover == element) {
-		$(element).popover('enable');
-		$(element).popover('toggle');
-		$(element).popover('disable');
-	}
-	else {
-		$(previous_popover).popover('enable');
-		$(previous_popover).popover('hide');
-		$(previous_popover).popover('disable');
+	hidePopover();
+	if (previous_popover != element) {
 		$(element).popover({
 			placement:'top',
 			html:true,
@@ -182,13 +188,14 @@ function sensorDeletePrompt(element) {
 			}
 		});
 		$(element).popover('enable');
-		$(element).popover('show');
+		$(element).popover('toggle');
 		$(element).popover('disable');
 		previous_popover = $(element);
 	}
 }
 
 function sensorDeletePromptYes(element) {
+	hidePopover();
 	$.ajax({
 		type: "POST",
 		url: remove_sensor_url,
@@ -200,7 +207,7 @@ function sensorDeletePromptYes(element) {
 		}),
 		success: function(result){
 			if (result.result == true) {
-				window.location.reload(true);
+				sensorListRefresh();
 			}
 			else {
 				$(element).parents('.sensor-delete').find('.sensor-delete-error').text(result.reason);
@@ -210,89 +217,69 @@ function sensorDeletePromptYes(element) {
 }
 
 function sensorDeletePromptNo(element){
-	$(previous_popover).popover('enable');
-	$(previous_popover).popover('hide');
-	$(previous_popover).popover('disable');
-	previous_popover = null;
+	hidePopover();
 	delete_sensor_id = null;
 }
 
-$(document).ready(function(){
-	$("#get-sensor-list").submit(function (event) {
-		event.preventDefault();   
-		$.get( device_sensor_list_url, {device_id: $("#get-sensor-list-device-id").val()}, function(data) {
-			$(previous_popover).popover('hide');
-			$('#sensor-list').html('');
-			result = data['result']
-			if (result.length > 0) {
-				$('#sensor-list-error').text('');
-				$('#sensor-list-empty').addClass('invisible');
-				for(var k in data['result']) {
-					var format = '<div class="row">' + 
-					'<button onclick="sensorInfo(this)" type="button" class="btn button-icon sensor" data-sensor-id="' + result[k]['sensor_id']  + '">' + result[k]['sensor_name'] + '</button>' + 
-					'<button onclick="sensorDeletePrompt(this)" type="button" class="btn button-icon sensor-delete" data-sensor-id="' + result[k]['sensor_id']  + '">&times;</button>' + 
-					'</div>';
-					$('#sensor-list').append(format);
-				}
-				sensor_device_id = $("#get-sensor-list-device-id").val()
-			}
-			else if (result.length == 0) {
-				$('#sensor-list-empty').removeClass('invisible');
-				sensor_device_id = null;
+function getSensorListFormSubmit(event) {
+	event.preventDefault();
+	sensor_device_id = $("#get-sensor-list-device-id").val();
+	sensorListRefresh();
+}
+
+function deviceAddFormSubmit (event) {
+	event.preventDefault();
+	var device_name = $("#device-form-name").val();
+	var device_id = $("#device-form-id").val();        
+	$.ajax({
+		type: "POST",
+		url: add_device_url,
+		contentType: "application/json",
+		dataType: "json",
+		data: JSON.stringify({
+			"device_id": device_id,
+			"device_name": device_name
+		}),
+		success: function(result){
+			if (result.result == true) {
+				$('.modal').modal('hide');
+				deviceListRefresh();
 			}
 			else {
-				$('#sensor-list-empty').addClass('invisible');
-				$('#sensor-list-error').text('Error: ' + data.reason);
-				sensor_device_id = null;
+				$('#device-form-error').text(result.reason);
 			}
-		});
+		}
 	});
-	$("#device-form").submit(function (event) {
-		event.preventDefault();
-		var device_name = $("#device-form-name").val();
-		var device_id = $("#device-form-id").val();        
-		$.ajax({
-			type: "POST",
-			url: add_device_url,
-			contentType: "application/json",
-			dataType: "json",
-			data: JSON.stringify({
-				"device_id": device_id,
-				"device_name": device_name
-			}),
-			success: function(result){
-				if (result.result == true) {
-					window.location.reload(true);
-				}
-				else {
-					$('#device-form-error').text(result.reason);
-				}
+}
+
+function sensorAddFormSubmit (event) {
+	event.preventDefault();
+	var device_id = $("#sensor-form-device-id").val();
+	var sensor_name = $("#sensor-form-name").val();
+	var sensor_id = $("#sensor-form-id").val();        
+	$.ajax({
+		type: "POST",
+		url: add_sensor_url,
+		contentType: "application/json",
+		dataType: "json",
+		data: JSON.stringify({
+			"device_id": device_id,
+			"sensor_id": sensor_id,
+			"sensor_name": sensor_name
+		}),
+		success: function(result){
+			if (result.result == true) {
+				$('.modal').modal('hide');
+				sensorListRefresh();
 			}
-		});
-	});
-	$("#sensor-form").submit(function (event) {
-		event.preventDefault();
-		var device_id = $("#sensor-form-device-id").val();
-		var sensor_name = $("#sensor-form-name").val();
-		var sensor_id = $("#sensor-form-id").val();        
-		$.ajax({
-			type: "POST",
-			url: add_sensor_url,
-			contentType: "application/json",
-			dataType: "json",
-			data: JSON.stringify({
-				"device_id": device_id,
-				"sensor_id": sensor_id,
-				"sensor_name": sensor_name
-			}),
-			success: function(result){
-				if (result.result == true) {
-					window.location.reload(true);
-				}
-				else {
-					$('#sensor-form-error').text(result.reason);
-				}
+			else {
+				$('#sensor-form-error').text(result.reason);
 			}
-		});
+		}
 	});
+}
+
+$(document).ready(function(){
+	accountInfoRefresh();
+	deviceListRefresh();
 });
