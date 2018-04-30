@@ -98,6 +98,7 @@ class User(Iotku):
 			self.user_document = self.user_list.find_one({"_id":self._id})
 			self.user_document["total_device"] += 1
 			self.user_list.save(self.user_document)
+			_id = mongo_id.inserted_id
 			return Device(_id, self.device_list, self.sensor_list)
 		else:
 			return False
@@ -105,10 +106,11 @@ class User(Iotku):
 	def remove_device(self, device_id):
 		device_info = self.find_device(device_id)
 		if device_info:
-			self.device_list.remove_one({"_id":device_info._id})
+			self.device_list.remove({"_id":device_info._id})
 			self.user_document = self.user_list.find_one({"_id":self._id})
 			self.user_document["total_device"] -= 1
 			self.user_list.save(self.user_document)
+			self.sensor_list.remove({"api_key":self.get_api_key(),"device_id":device_id})
 			return True
 		else:
 			return False
@@ -181,9 +183,9 @@ class Device(User):
 			return False
 
 	def remove_sensor(self, sensor_id):
-		sensor_info = next((item for item in self.device_document["device_list"] if item["sensor_id"] == sensor_id), False)
+		sensor_info = self.find_sensor(sensor_id)
 		if sensor_info:
-			self.sensor_list.remove_one({"_id":sensor_info["mongo_id"]})
+			self.sensor_list.remove({"_id":sensor_info._id})
 			self.device_document = self.device_list.find_one({"_id":self._id})
 			self.device_document["total_sensor"] -= 1
 			self.device_list.save(self.device_document)

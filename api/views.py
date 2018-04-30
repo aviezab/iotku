@@ -117,12 +117,15 @@ def add_device():
 		if all(x in content.keys() for x in ["device_id","device_name"]):
 			device_id = content['device_id']
 			device_name = content['device_name']
-			user = iotku.find_user(email=session["email"])
-			if not user.find_device(device_id):
-				user.add_device(device_id,device_name)
-				return jsonify({'result': True})
+			if device_id and device_name:
+				user = iotku.find_user(email=session["email"])
+				if not user.find_device(device_id):
+					user.add_device(device_id,device_name)
+					return jsonify({'result': True})
+				else:
+					return jsonify({'result': False, 'reason': "Device ID exists"})
 			else:
-				return jsonify({'result': False, 'reason': "Device ID exists"})
+				return jsonify({'result': False, 'reason': "Device ID and/or device name cannot be empty"})
 		else:
 			return jsonify({'result': False, 'reason': 'Invalid format'})
 	else:
@@ -139,7 +142,7 @@ def remove_device():
 				user.remove_device(device_id)
 				return jsonify({'result': True})
 			else:
-				return jsonify({'result': False, 'reason': "Device not found"})
+				return jsonify({'result': False, 'reason': "Device ID not found"})
 		else:
 			return jsonify({'result': False, 'reason': 'Invalid format'})
 	else:
@@ -169,7 +172,7 @@ def device_name():
 			if device:
 				return jsonify({'result':device.get_device_name()})
 			else:
-				return jsonify({'result':False,'reason':'Device not found'})
+				return jsonify({'result':False,'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -186,7 +189,7 @@ def device_time_added():
 			if device:
 				return jsonify({'result':device.get_time_added()})
 			else:
-				return jsonify({'result':False,'reason':'Device IP not found'})
+				return jsonify({'result':False,'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -203,7 +206,7 @@ def device_total_sensor():
 			if device:
 				return jsonify({'result':device.get_total_sensor()})
 			else:
-				return jsonify({'result':False,'reason':'Device not found'})
+				return jsonify({'result':False,'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -225,7 +228,7 @@ def add_sensor():
 				else:
 					return jsonify({'result': False, 'reason': "Sensor ID exists"})
 			else:
-				return jsonify({'result': False, 'reason': "Device not found"})
+				return jsonify({'result': False, 'reason': "Device ID not found"})
 		else:
 			return jsonify({'result': False, 'reason': 'Invalid format'})
 	else:
@@ -247,7 +250,7 @@ def remove_sensor():
 				else:
 					return jsonify({'result': False, 'reason': "Sensor not found"})
 			else:
-				return jsonify({'result': False, 'reason': "Device not found"})
+				return jsonify({'result': False, 'reason': "Device ID not found"})
 		else:
 			return jsonify({'result': False, 'reason': 'Invalid format'})
 	else:
@@ -269,7 +272,7 @@ def device_sensor_list():
 				sensor_list = [{'sensor_id':x,'sensor_name':y,'time_added':z} for x,y,z in zip(sensor_id, sensor_name, time_added)]
 				return jsonify({'result':sensor_list})
 			else:
-				return jsonify({'result':False,'reason':'Device IP not found'})
+				return jsonify({'result':False,'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -293,7 +296,7 @@ def sensor_name():
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
-				return jsonify({'result':False,'reason':'Device IP not found'})
+				return jsonify({'result':False,'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -348,7 +351,7 @@ def sensor_data():
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
-				return jsonify({'result':False, 'reason':'IP not found'})
+				return jsonify({'result':False, 'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -371,7 +374,7 @@ def sensor_total_data_entry():
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
-				return jsonify({'result':False, 'reason':'IP not found'})
+				return jsonify({'result':False, 'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:
@@ -394,7 +397,7 @@ def sensor_last_data_added_time():
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
-				return jsonify({'result':False, 'reason':'IP not found'})
+				return jsonify({'result':False, 'reason':'Device ID not found'})
 		else:
 			return jsonify({'result':False,'reason':"Invalid format"})
 	else:

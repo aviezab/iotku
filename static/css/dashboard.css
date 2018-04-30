@@ -17,7 +17,7 @@
   color: black;
   background-color: rgb(247, 247, 247);
   box-shadow: 0 5px 10px 0 rgba(0,0,0,0.3);
-  text-align: center;
+  /*text-align: center;*/
   transition: 0.5s;
 }
 
@@ -32,6 +32,23 @@
   margin-bottom: 30px;
   width: 50%;
   height: auto;
+}
+
+.dropdown-menu {
+  padding: 10px;
+}
+
+#device-list-empty {
+  text-align: center
+}
+
+#sensor-list-empty {
+  text-align: center
+}
+
+#device-info{
+  position: absolute;
+  text-align: left;
 }
 
 #add-device-button {
