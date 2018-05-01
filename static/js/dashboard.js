@@ -29,7 +29,7 @@ function deviceListRefresh() {
 	$.get( device_list_url, function(data) {
 		$(previous_popover).popover('hide');
 		$('#device-list').html('');
-		var result = data['result']
+		var result = data['result'];
 		if (result.length > 0) {
 			$('#device-list-error').text('');
 			$('#device-list-empty').addClass('invisible');
@@ -128,7 +128,7 @@ function sensorListRefresh() {
 	$.get( device_sensor_list_url, {device_id: sensor_device_id}, function(data) {
 		$(previous_popover).popover('hide');
 		$('#sensor-list').html('');
-		var result = data['result']
+		var result = data['result'];
 		if (result.length > 0) {
 			$('#sensor-list-error').text('');
 			$('#sensor-list-empty').addClass('invisible');
