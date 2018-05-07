@@ -1,11 +1,13 @@
 from flask import Blueprint, request, session, jsonify, url_for
 from redissession import RedisSessionInterface
 from .iotku_database import Iotku
+from .natslib import NATS
 import os, hashlib
 
 name = 'api'
 api = Blueprint(name, __name__)
 iotku = Iotku()
+c = NATS()
 
 #---------------------API---------------------------
 
@@ -30,7 +32,7 @@ def register():
 @api.route('/api/connect', methods=['POST'])
 def connect():
 	content = request.get_json(silent=True)
-	if all(x in content.keys() for x in ["api_key","device_id"]):
+	if content and all(x in content.keys() for x in ["api_key","device_id"]):
 		try:
 			api_key = content['api_key']
 			device_id = content['device_id']
@@ -48,7 +50,7 @@ def connect():
 		except Exception as e:
 			print('Unknown error at do_login: ' + str(e))
 			return jsonify({'result': False, 'reason': 'Unknown Error'})
-	elif all(x in content.keys() for x in ["email","password"]):
+	elif content and all(x in content.keys() for x in ["email","password"]):
 		email = content['email']
 		password = content['password']
 		user = iotku.find_user(email=email, password=password)
@@ -328,7 +330,7 @@ def sensor_time_added():
 def sensor_data():
 	content = request.args
 	if all(x in session.keys() for x in ["logged_in","email"]):
-		if all(x in content.keys() for x in ["device_id","sensor_id","from"]):
+		if all(x in content.keys() for x in ["device_id","sensor_id"]):
 			try:
 				from_number = int(content['from'])
 				assert from_number >= 0
@@ -405,23 +407,28 @@ def sensor_last_data_added_time():
 
 @api.route('/api/post', methods=['POST'])
 def post_sensor_data():
-	if all(x in session.keys() for x in ["logged_in","api_key"]):
+	if all(x in session.keys() for x in ["logged_in","api_key","device_id"]):
 		content = request.get_json(silent=True)
-		if all(x in content.keys() for x in ["data","device_id","sensor_id"]):
-			try:
-				data = content['data']
-				device_id = content['device_id']
-				sensor_id = content['sensor_id']
-				formatted = session['api_key'] + ' , ' + device_id + ' , ' + sensor_id + ' , ' + data
-				c.publish(subject='post', payload=bytes(formatted, 'utf-8'))
-				return jsonify({'result': True})
-			except Exception as e:
-				print('Error at post_sensor_data: ' + str(e))
-				return jsonify({'result': False,'reason': 'Unexpected error. Try reconnecting to your account'})
+		if all(x in content.keys() for x in ["data","sensor_id"]):
+			data = content['data']
+			device_id = session['device_id']
+			sensor_id = content['sensor_id']
+			user = iotku.find_user(api_key=session['api_key'])
+			device = user.find_device(device_id)
+			if device:
+				sensor = device.find_sensor(sensor_id)
+				if sensor:
+					formatted = session['api_key'].encode("ascii").hex() + ' , ' + device_id.encode("ascii").hex() + ' , ' + sensor_id.encode("ascii").hex() + ' , ' + data.encode("ascii").hex()
+					c.publish(subject='post', payload=bytes(formatted, 'utf-8'))
+					return jsonify({'result': True})
+				else:
+					return jsonify({'result':False,'reason':'Sensor ID not found'})
+			else:
+				return jsonify({'result':False, 'reason':'Device ID not found'})
 		else:
 			return jsonify({'result': False,'reason': "Invalid format"})
 	else:
-		return jsonify({'result': False, 'reason': 'Not connected to any account'})
+		return jsonify({'result': False, 'reason': 'Not connected to any account / Invalid login type'})
 #------------------/SENSOR-------------------------
 
 #---------------------MISC---------------------------
