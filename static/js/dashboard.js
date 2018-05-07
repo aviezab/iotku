@@ -166,6 +166,12 @@ function sensorInfo(element) {
 				$.get( sensor_time_added_url, {sensor_id: sensor_id, device_id: sensor_device_id}, function(data) {
 					$(".sensor-time-added").text(data.result);
 				});
+				$.get( sensor_total_data_entry_url, {sensor_id: sensor_id, device_id: sensor_device_id}, function(data) {
+					$(".sensor-total-data-entry").text(data.result);
+				});
+				$.get( sensor_last_data_added_time_url, {sensor_id: sensor_id, device_id: sensor_device_id}, function(data) {
+					$(".sensor-last-data-added-time").text(data.result);
+				});
 				return $("#sensor-info").html();
 			}
 		});
