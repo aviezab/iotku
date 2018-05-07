@@ -372,7 +372,7 @@ def sensor_total_data_entry():
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
 					total_entry = sensor.get_total_data_entry()
-					return total_entry
+					return jsonify({'result':total_entry})
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
@@ -395,7 +395,7 @@ def sensor_last_data_added_time():
 				sensor = device.find_sensor(sensor_id)
 				if sensor:
 					last_time = sensor.get_last_data_added_time()
-					return last_time
+					return jsonify({'result':last_time})
 				else:
 					return jsonify({'result':False,'reason':'Sensor ID not found'})
 			else:
