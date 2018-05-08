@@ -20,7 +20,7 @@
     <h5>Total&nbsp;Device:&nbsp;<span id="account-total-device"></span></h5>
   </div>
   <div class="row" id="widget-list">
-    <div class="col-md-4 mx-auto card-dashboard" id="devices">
+    <div class="col-md-3 mx-auto card-dashboard" id="devices">
       <h4>Your Devices</h4>
       <h5><span id="device-list-error"></span></h5>
       <h4>
@@ -31,12 +31,12 @@
       <div id="device-list">
 
       </div>
-      <div class="invisible" id="device-list-empty">
+      <div class="d-none" id="device-list-empty">
         <img src="/static/images/connect.png" alt="connect">
         <p>It seems that you haven't added a device yet. Maybe it's time?</p>
       </div>
     </div>
-    <div class="col-md-4 mx-auto card-dashboard" id="sensors">
+    <div class="col-md-3 mx-auto card-dashboard" id="sensors">
       <h4>Your Sensors</h4>
       <h5><span id="sensor-list-error"></span></h5>
       <h4>
@@ -45,16 +45,38 @@
             <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="get-sensor-list-device-id" required>
             <button type="submit" class="fa fa-refresh button-icon" id="sensor-list-refresh" aria-hidden="true"></button>
           </form>
-          <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#sensor-modal" id="add-sensor-button"></button>
+          <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#sensor-form-modal" id="add-sensor-button"></button>
         </div>
       </h4>
       <hr>
       <div id="sensor-list">
 
       </div>
-      <div class="invisible" id="sensor-list-empty">
+      <div class="d-none" id="sensor-list-empty">
         <img src="/static/images/castle.png" alt="connect">
         <p>Your device doesn't have a sensor. <br> Well, what are you waiting for?</p>
+      </div>
+    </div>
+    <div class="col-md-3 mx-auto card-dashboard" id="rules">
+      <h4>Your Rules</h4>
+      <h5><span id="rule-list-error"></span></h5>
+      <h4>
+        <div class="btn-group">
+          <form class="btn-group" id="get-rule-list" onsubmit="getRuleListFormSubmit(event)">
+            <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="get-rule-list-device-id" required>
+            <input type="text" name="sensor-id" placeholder="Sensor ID" class="form-control" id="get-rule-list-sensor-id" required>
+            <button type="submit" class="fa fa-refresh button-icon" id="rule-list-refresh" aria-hidden="true"></button>
+          </form>
+          <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#rule-form-modal" id="add-rule-button"></button>
+        </div>
+      </h4>
+      <hr>
+      <div id="rule-list">
+
+      </div>
+      <div class="d-none" id="rule-list-empty">
+        <img src="/static/images/book.png" alt="connect">
+        <p>Last step. Add a rule now!</p>
       </div>
     </div>
   </div>
@@ -86,7 +108,7 @@
     </div>
   </div>
 </div>
-<div class="invisible" id="device-info">
+<div class="d-none" id="device-info">
   <h5 style="text-align: center;">Device&nbsp;ID&nbsp;</h5>
   <span class="device-id">null</span>
   <hr>
@@ -99,7 +121,7 @@
   <h5 style="text-align: center;">Total&nbsp;Sensor&nbsp;</h5>
   <a href="javascript:void(0)" onclick="$('#get-sensor-list-device-id').val($('.device-id').first().text()); getSensorListFormSubmit(event);" class="device-total-sensor">null</a>
 </div>
-<div class="invisible" id="device-delete-prompt">
+<div class="d-none" id="device-delete-prompt">
   <div class="device-delete text-center">
     <h5>Are you sure you want to remove this device?</h5>
     <h5><span class="device-delete-error"></span></h5>
@@ -111,7 +133,7 @@
 </div>
 
 <!-- SENSOR -->
-<div id="sensor-modal" class="modal fade" role="dialog">
+<div id="sensor-form-modal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <!-- Modal content-->
     <div class="modal-content">
@@ -140,7 +162,7 @@
     </div>
   </div>
 </div>
-<div class="invisible" id="sensor-info">
+<div class="d-none" id="sensor-info">
   <h5 style="text-align: center;">Sensor&nbsp;ID&nbsp;</h5>
   <span class="sensor-id">null</span>
   <hr>
@@ -150,19 +172,121 @@
   <h5 style="text-align: center;">Time&nbsp;Added&nbsp;</h5>
   <span class="sensor-time-added">null</span>
   <hr>
+  <h5 style="text-align: center;">Last&nbsp;Data&nbsp;Added&nbsp;Time&nbsp;</h5>
+  <span class="sensor-last-data-added-time">null</span>
+  <hr>
   <h5 style="text-align: center;">Total&nbsp;Data&nbsp;Entry&nbsp;</h5>
   <span class="sensor-total-data-entry">null</span>
   <hr>
-  <h5 style="text-align: center;">Last&nbsp;Data&nbsp;Added&nbsp;Time&nbsp;</h5>
-  <span class="sensor-last-data-added-time">null</span>
+  <h5 style="text-align: center;">Total&nbsp;Rule&nbsp;</h5>
+  <a href="javascript:void(0)" onclick="$('#get-rule-list-device-id').val($('.device-id').first().text()); $('#get-rule-list-sensor-id').val($('.sensor-id').first().text()); getRuleListFormSubmit(event);" class="sensor-total-rule">null</a>
 </div>
-<div class="invisible" id="sensor-delete-prompt">
+<div class="d-none" id="sensor-delete-prompt">
   <div class="sensor-delete text-center">
     <h5>Are you sure you want to remove this sensor?</h5>
     <h5><span class="sensor-delete-error"></span></h5>
     <div class="btn-group mx-auto">
       <button onclick="sensorDeletePromptYes(this)" class="btn btn-primary sensor-delete-yes">Yes</button>
       <button onclick="sensorDeletePromptNo(this)" class="btn btn-primary sensor-delete-no">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- RULE -->
+<div id="rule-form-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add a rle</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h5><span id="rule-form-error"></span></h5>
+        <form class="" id="rule-form" action="" method="post" onsubmit="ruleAddFormSubmit(event)">
+          <div class="form-group">
+            <label for"rule-form-device-id">Device ID</label>
+            <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="rule-form-device-id" required>
+          </div>
+          <div class="form-group">
+            <label for"rule-form-sensor-id">Sensor ID</label>
+            <input type="text" name="sensor-id" placeholder="Sensor ID" class="form-control" id="rule-form-sensor-id" required>
+          </div>
+          <div class="form-group">
+            <label for="rule-form-name">Rule Name</label>
+            <input type="text" placeholder="Rule Name" class="form-control" id="rule-form-name" required>
+          </div>
+          <div class="form-group">
+            <label for="rule-form-id">Rule ID</label>
+            <input type="text" placeholder="Rule ID" class="form-control" id="rule-form-id" required>
+          </div>
+          <div class="form-group">
+            <label for="rule-form-expected-value">Expected Data Type</label>
+            <select class="form-control" id="rule-form-expected-value">
+              <option value="STR">String</option>
+              <option value="INT">Integer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="rule-form-operator">Data</label>
+            <div class="btn-group">
+              <select class="form-control" id="rule-form-operator">
+                <option value="GTR">></option>
+                <option value="GEQ">>=</option>
+                <option value="EQU">==</option>
+                <option value="LEQ"><=</option>
+                <option value="LSS"><</option>
+                <option value="NEQ">!=</option>
+              </select>
+              <input type="text" placeholder="Value" class="form-control" id="rule-form-value" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="rule-form-endpoint">Endpoint</label>
+            <input type="text" name="endpoint" placeholder="Endpoint Device ID" class="form-control" id="rule-form-endpoint" required>
+          </div>
+          <div class="form-group">
+            <label for="rule-form-command">Command</label>
+            <input type="text" name="command" placeholder="Command to send to Endpoint" class="form-control" id="rule-form-command" required>
+          </div>
+          <button type="submit" class="btn btn-iot" id="btn-rule-submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-none" id="rule-info">
+  <h5 style="text-align: center;">Rule&nbsp;ID&nbsp;</h5>
+  <span class="rule-id">null</span>
+  <hr>
+  <h5 style="text-align: center;">Rule&nbsp;Name&nbsp;</h5>
+  <span class="rule-name">null</span>
+  <hr>
+  <h5 style="text-align: center;">Time&nbsp;Added&nbsp;</h5>
+  <span class="rule-time-added">null</span>
+  <hr>
+  <h5 style="text-align: center;">Expected&nbsp;Data&nbsp;Type&nbsp;</h5>
+  <span class="rule-expected-value">null</span>
+  <hr>
+  <h5 style="text-align: center;">Operator&nbsp;</h5>
+  <span class="rule-operator">null</span>
+  <hr>
+  <h5 style="text-align: center;">Value&nbsp;</h5>
+  <span class="rule-value">null</span>
+  <hr>
+  <h5 style="text-align: center;">Endpoint&nbsp;</h5>
+  <span class="rule-endpoint">null</span>
+  <hr>
+  <h5 style="text-align: center;">Command&nbsp;</h5>
+  <span class="rule-command">null</span>
+</div>
+<div class="d-none" id="rule-delete-prompt">
+  <div class="rule-delete text-center">
+    <h5>Are you sure you want to remove this rule?</h5>
+    <h5><span class="rule-delete-error"></span></h5>
+    <div class="btn-group mx-auto">
+      <button onclick="ruleDeletePromptYes(this)" class="btn btn-primary rule-delete-yes">Yes</button>
+      <button onclick="ruleDeletePromptNo(this)" class="btn btn-primary rule-delete-no">No</button>
     </div>
   </div>
 </div>

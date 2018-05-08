@@ -1,9 +1,9 @@
 from flask import Flask, request, session, render_template, url_for, redirect
 from redissession import RedisSessionInterface
-from api import views
+import api
 
 app = Flask(__name__, static_url_path='/static')
-app.register_blueprint(views.api)
+app.register_blueprint(api.api)
 #Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
 app.session_interface = RedisSessionInterface()
 
@@ -12,7 +12,7 @@ def index():
 	if session.get('logged_in') and session.get('email'):
 		return render_template('dashboard.html')
 	else:
-		return render_template('index.html', api_connect=url_for('api.' + views.connect.__name__), api_register=url_for('api.' + views.register.__name__))
+		return render_template('index.html')
 
 if __name__ == "__main__":
 		app.secret_key = "secret key"

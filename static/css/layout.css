@@ -47,10 +47,6 @@ body {
   padding: 20px;
 }
 
-.invisible {
-  display: none;
-}
-
 .button-icon {
   background-color: Transparent;
   border: none;
