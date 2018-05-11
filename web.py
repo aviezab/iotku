@@ -1,6 +1,6 @@
-from flask import Flask, request, session, render_template, url_for, redirect
+from flask import Flask, request, session, render_template, url_for, redirect, jsonify
 from redissession import RedisSessionInterface
-import api
+import api, os
 
 app = Flask(__name__, static_url_path='/static')
 app.register_blueprint(api.api)
@@ -14,6 +14,18 @@ def index():
 	else:
 		return render_template('index.html')
 
+@app.route("/api/url", methods=['GET'])
+def site_map():
+  links = dict()
+  for rule in app.url_map.iter_rules():
+    # Filter out rules we can't navigate to in a browser
+    # and rules that require parameters
+    if api.name in rule.endpoint:
+      url = url_for(rule.endpoint, **(rule.defaults or {}))
+      links[rule.endpoint[len(api.name)+1:]] = url
+  # links is now a dictionary of url
+  return jsonify({'result':links})
+
 if __name__ == "__main__":
-		app.secret_key = "secret key"
+		app.secret_key = os.urandom(24)
 		app.run(debug=True,host='0.0.0.0', port=5000)
