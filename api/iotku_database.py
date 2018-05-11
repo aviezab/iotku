@@ -103,7 +103,9 @@ class User(Iotku):
                       "device_id":device_id,
                       "device_name":device_name,
                       "total_sensor":0,
-                      "time_added":date
+                      "time_added":date,
+                      "command": dict(),
+                      "command_history": []
                       })
       self.user_document = self.user_list.find_one({"_id":self._id})
       self.user_document["total_device"] += 1
@@ -121,6 +123,7 @@ class User(Iotku):
       self.user_document["total_device"] -= 1
       self.user_list.save(self.user_document)
       self.sensor_list.remove({"api_key":self.get_api_key(),"device_id":device_id})
+      self.rule_list.remove({"api_key":self.get_api_key(),"device_id":device_id})
       return True
     else:
       return False
@@ -201,9 +204,27 @@ class Device(User):
       self.device_document = self.device_list.find_one({"_id":self._id})
       self.device_document["total_sensor"] -= 1
       self.device_list.save(self.device_document)
+      self.rule_list.remove({"api_key":self.get_api_key(),"device_id":self.get_device_id(),"sensor_id":sensor_id})
       return True
     else:
       return False
+
+  def send_command(self, command):
+    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+    data_entry = {"time_added":date[:-7],"_time_added":date,"command":command}
+    self.device_document = self.device_list.find_one({"_id":self._id})
+    self.device_document["command_history"].append(data_entry)
+    self.device_document["command"] = data_entry
+    self.device_list.save(self.device_document)
+    return True
+
+  def get_command(self):
+    self.device_document = self.device_list.find_one({"_id":self._id})
+    return self.device_document["command"]
+
+  def get_command_history(self):
+    self.device_document = self.device_list.find_one({"_id":self._id})
+    return self.device_document["command_history"]
 
 class Sensor(Device):
   def __init__(self, _id, sensor_list, rule_list):
@@ -372,6 +393,11 @@ class Rule(Sensor):
 
   def compare (self, data):
     try:
+      if self.get_expected_value().upper() == 'STR':
+        data = str(data)
+      elif self.get_expected_value().upper() == 'INT':
+        data = int(data)
+
       if self.get_operator() == "EQU":
         if data == self.get_value():
           return True

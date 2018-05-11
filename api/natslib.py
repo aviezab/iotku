@@ -99,6 +99,6 @@ class NATS:
     # END PUBLISH FEATURE
 
 if __name__ == '__main__':
-    c = SubNATS(NATS())
+    c = NATS()
     c.subscribe(subject="help",queue="worker")
     c.start_loop()

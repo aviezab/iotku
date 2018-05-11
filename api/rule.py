@@ -9,7 +9,7 @@ iotku = Iotku()
 def rule_name():
   content = request.args
   if not all(x in session.keys() for x in ["logged_in","email"]):
-    return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+    return jsonify({'result': False,'reason':'Not logged in / Unauthorized'})
   elif not all(x in content.keys() for x in ["device_id","sensor_id","rule_id"]):
     return jsonify({'result': False, 'reason': 'Invalid format'})
   else:

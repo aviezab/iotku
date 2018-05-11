@@ -17,13 +17,15 @@ window.device_total_sensor_url = "/api/device/total_sensor";
 window.device_sensor_list_url = "/api/device/sensor_list";
 window.device_add_sensor_url = "/api/device/add_sensor";
 window.device_remove_sensor_url = "/api/device/remove_sensor";
+window.device_command_url = "/api/device/command";
+window.device_command_history_url = "/api/device/command_history";
 
 window.sensor_name_url = "/api/sensor/name";
 window.sensor_time_added_url = "/api/sensor/time_added";
 window.sensor_total_data_entry_url = "/api/sensor/total_data_entry";
 window.sensor_last_data_added_time_url = "/api/sensor/last_data_added_time";
-window.sensor_data_url = "/api/sensor/data";
-window.sensor_post_data_url = "/api/sensor/post";
+window.sensor_get_data_url = "/api/sensor/get_data";
+window.sensor_post_data_url = "/api/sensor/post_data";
 window.sensor_total_rule_url = "/api/sensor/total_rule";
 window.sensor_rule_list_url = "/api/sensor/rule_list";
 window.sensor_add_rule_url = "/api/sensor/add_rule";

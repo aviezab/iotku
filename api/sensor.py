@@ -4,6 +4,7 @@ from .natslib import NATS
 from . import api
 
 iotku = Iotku()
+c = NATS()
 
 #------------------SENSOR-------------------------
 @api.route('/api/sensor/name', methods=['GET'])
@@ -48,8 +49,8 @@ def sensor_time_added():
       else:
         return jsonify({'result':sensor.get_time_added()})
 
-@api.route('/api/sensor/data', methods=['GET'])
-def sensor_data():
+@api.route('/api/sensor/get_data', methods=['GET'])
+def sensor_get_data():
   content = request.args
   if not all(x in session.keys() for x in ["logged_in","email"]):
     return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
@@ -122,7 +123,7 @@ def sensor_last_data_added_time():
       else:
         return jsonify({'result':sensor.get_last_data_added_time()})
 
-@api.route('/api/sensor/post', methods=['POST'])
+@api.route('/api/sensor/post_data', methods=['POST'])
 def sensor_post_data():
   content = request.get_json(silent=True)
   if not all(x in session.keys() for x in ["logged_in","api_key","device_id"]):
@@ -130,7 +131,7 @@ def sensor_post_data():
   elif not all(x in content.keys() for x in ["data","sensor_id"]):
     return jsonify({'result': False,'reason': "Invalid format"})
   else:
-    data = content['data']
+    data = str(content['data'])
     device_id = session['device_id']
     sensor_id = content['sensor_id']
     user = iotku.find_user(api_key=session['api_key'])
@@ -203,6 +204,16 @@ def sensor_add_rule():
   elif not content['operator'].upper() in ['EQU','NEQ','LSS','LEQ','GTR','GEQ'] or not content['expected_value'].upper() in ['STR','INT']:
     return jsonify({'result': False, 'reason': "Invalid operator and/or expected_value"})
   else:
+    if content['expected_value'].upper() == 'STR':
+      try:
+        content['value'] = str(content['value'])
+      except:
+        return jsonify({'result': False, 'reason': "Expected value as string"})
+    elif content['expected_value'].upper() == 'INT':
+      try:
+        content['value'] = int(content['value'])
+      except:
+        return jsonify({'result': False, 'reason': "Expected value as integer"})
     device_id = content['device_id']
     sensor_id = content['sensor_id']
     endpoint = content["endpoint"]

@@ -120,4 +120,61 @@ def device_remove_sensor():
         return jsonify({'result': True})
       else:
         return jsonify({'result': False, 'reason': "Sensor not found"})
+
+@api.route('/api/device/command', methods=['GET'])
+def device_command():
+  content = request.args
+  if not 'device_id' in content.keys():
+    if not all(x in session.keys() for x in ["logged_in","device_id"]):
+      return jsonify({'result':False,'reason':'Not logged in / Invalid login type / Invalid format'})
+    else:
+      device_id = session['device_id']
+      user = iotku.find_user(api_key=session["api_key"])
+      device = user.find_device(device_id)
+      if not device:
+        return jsonify({'result': False, 'reason': "Invalid Device ID. Please relogin"})
+      else:
+        command = device.get_command()
+        return jsonify({'result': command})
+  else:
+    if not all(x in session.keys() for x in ["logged_in","email"]):
+      return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+    else:
+      device_id = content['device_id']
+      user = iotku.find_user(email=session["email"])
+      device = user.find_device(device_id)
+      if not device:
+        return jsonify({'result': False, 'reason': "Invalid Device ID"})
+      else:
+        command = device.get_command()
+        return jsonify({'result': command})
+
+@api.route('/api/device/command_history', methods=['GET'])
+def device_command_history():
+  content = request.args
+  if not 'device_id' in content.keys():
+    if not all(x in session.keys() for x in ["logged_in","device_id"]):
+      return jsonify({'result':False,'reason':'Not logged in / Invalid login type / Invalid format'})
+    else:
+      device_id = session['device_id']
+      user = iotku.find_user(api_key=session["api_key"])
+      device = user.find_device(device_id)
+      if not device:
+        return jsonify({'result': False, 'reason': "Invalid Device ID. Please relogin"})
+      else:
+        command = device.get_command_history()
+        return jsonify({'result': command})
+  else:
+    if not all(x in session.keys() for x in ["logged_in","email"]):
+      return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
+    else:
+      device_id = content['device_id']
+      user = iotku.find_user(email=session["email"])
+      device = user.find_device(device_id)
+      if not device:
+        return jsonify({'result': False, 'reason': "Invalid Device ID"})
+      else:
+        command = device.get_command_history()
+        return jsonify({'result': command})
+
 #------------------/DEVICE-------------------------
