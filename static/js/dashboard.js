@@ -127,6 +127,10 @@ function deviceInfo(element) {
 				$.get( device_total_sensor_url, {device_id: device_id}, function(data) {
 					$(".device-total-sensor").text(data.result);
 				});
+				$.get( device_command_url, {device_id: device_id}, function(data) {
+					$(".device-latest-command-added-time").text(data.result.time_added);
+					$(".device-latest-command").text(data.result.command);
+				});
 				return $("#device-info").html();
 			}
 		});

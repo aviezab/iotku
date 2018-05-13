@@ -787,11 +787,13 @@ class Sensor(Device):
     return True
 
   def get_data(self, get_from=0, to=-1):
+    # ------------------------------------------
     # Fungsi:
     # - Mendapatkan data sensor
     # Penjelasan:
     # - get_from bertipe int, sebagai index awal
     # - to bertipe int, sebagai index akhir
+    # ------------------------------------------
 
     # Sorting data_entry menurut waktu dari yang terbaru sampai yang terlama
     time_added_list = sorted([x["_time_added"] for x in sensor.sensor_document["data_collection"]],reverse=True)[get_from:to]
@@ -969,7 +971,7 @@ class Rule(Sensor):
     # Return value (jika tidak ada, akan return None)
     return self.rule_document.get(key)
 
-  def change_sensor_info(self, rule_id = None, rule_name = None, expected_type = None, 
+  def change_rule_info(self, rule_id = None, rule_name = None, expected_type = None, 
                           condition = None, endpoint = None, command = None):
     # ------------------------------------------
     # Fungsi:
