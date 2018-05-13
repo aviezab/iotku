@@ -88,7 +88,7 @@ body {
    .dashboard {font-size: 18px;}
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 950px) {
   html {
     font-size: 9px;
   }

@@ -20,7 +20,7 @@ def device_name():
     if not device:
       return jsonify({'result':False,'reason':'Device ID not found'})
     else:
-      return jsonify({'result':device.get_device_name()})
+      return jsonify({'result':device.get('device_name')})
 
 @api.route('/api/device/time_added', methods=['GET'])
 def device_time_added():
@@ -36,7 +36,7 @@ def device_time_added():
     if not device:
       return jsonify({'result':False,'reason':'Device ID not found'})
     else:
-      return jsonify({'result':device.get_time_added()})
+      return jsonify({'result':device.get('time_added')})
 
 @api.route('/api/device/total_sensor', methods=['GET'])
 def device_total_sensor():
@@ -52,7 +52,7 @@ def device_total_sensor():
     if not device:
       return jsonify({'result':False,'reason':'Device ID not found'})
     else:
-      return jsonify({'result':device.get_total_sensor()})
+      return jsonify({'result':device.get('total_sensor')})
       
 
 @api.route('/api/device/sensor_list', methods=['GET'])
@@ -70,8 +70,8 @@ def device_sensor_list():
       return jsonify({'result':False,'reason':'Device ID not found'})
     else:
       sensors = device.get_sensor_list()
-      sensor_id = [x.get_sensor_id() for x in sensors]
-      sensor_name = [x.get_sensor_name() for x in sensors]
+      sensor_id = [x.get('sensor_id') for x in sensors]
+      sensor_name = [x.get('sensor_name') for x in sensors]
       sensor_list = [{'sensor_id':x,'sensor_name':y} for x,y in zip(sensor_id, sensor_name)]
       return jsonify({'result':sensor_list})
 
@@ -134,7 +134,7 @@ def device_command():
       if not device:
         return jsonify({'result': False, 'reason': "Invalid Device ID. Please relogin"})
       else:
-        command = device.get_command()
+        command = device.get('command')
         return jsonify({'result': command})
   else:
     if not all(x in session.keys() for x in ["logged_in","email"]):
@@ -146,7 +146,7 @@ def device_command():
       if not device:
         return jsonify({'result': False, 'reason': "Invalid Device ID"})
       else:
-        command = device.get_command()
+        command = device.get('command')
         return jsonify({'result': command})
 
 @api.route('/api/device/command_history', methods=['GET'])
@@ -162,7 +162,7 @@ def device_command_history():
       if not device:
         return jsonify({'result': False, 'reason': "Invalid Device ID. Please relogin"})
       else:
-        command = device.get_command_history()
+        command = device.get('command_history')
         return jsonify({'result': command})
   else:
     if not all(x in session.keys() for x in ["logged_in","email"]):
@@ -174,7 +174,7 @@ def device_command_history():
       if not device:
         return jsonify({'result': False, 'reason': "Invalid Device ID"})
       else:
-        command = device.get_command_history()
+        command = device.get('command_history')
         return jsonify({'result': command})
 
 #------------------/DEVICE-------------------------

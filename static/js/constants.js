@@ -33,9 +33,8 @@ window.sensor_remove_rule_url = "/api/sensor/remove_rule";
 
 window.rule_name_url = "/api/rule/name";
 window.rule_time_added_url = "/api/rule/time_added";
-window.rule_expected_value_url = "/api/rule/expected_value";
-window.rule_operator_url = "/api/rule/operator";
-window.rule_value_url = "/api/rule/value";
+window.rule_expected_type_url = "/api/rule/expected_type";
+window.rule_condition_url = "/api/rule/condition";
 window.rule_endpoint_url = "/api/rule/endpoint";
 window.rule_command_url = "/api/rule/command";
 

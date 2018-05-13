@@ -198,7 +198,7 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Add a rle</h4>
+        <h4 class="modal-title">Add a Rule</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
@@ -221,24 +221,30 @@
             <input type="text" placeholder="Rule ID" class="form-control" id="rule-form-id" required>
           </div>
           <div class="form-group">
-            <label for="rule-form-expected-value">Expected Data Type</label>
-            <select class="form-control" id="rule-form-expected-value">
+            <label for="rule-form-expected-type">Expected Data Type</label>
+            <select class="form-control" id="rule-form-expected-type">
               <option value="STR">String</option>
               <option value="INT">Integer</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="rule-form-operator">Data</label>
-            <div class="btn-group">
-              <select class="form-control" id="rule-form-operator">
-                <option value="GTR">></option>
-                <option value="GEQ">>=</option>
-                <option value="EQU">==</option>
-                <option value="LEQ"><=</option>
-                <option value="LSS"><</option>
-                <option value="NEQ">!=</option>
-              </select>
-              <input type="text" placeholder="Value" class="form-control" id="rule-form-value" required>
+            <label for="condition">Condition <button type="button" name="button" class="fa fa-plus-circle button-icon" onclick="addCondition();" id="add-condition-button"></button></label>
+            <small id="passwordHelpInline" class="text-muted">
+              (AND)
+            </small>
+            <div id="condition">
+              <div class="form-inline row">
+                <label class="col-sm-2" for="rule-form-operator">Data</label>
+                <select class="form-control col-sm-4" id="rule-form-operator">
+                  <option value="GTR">></option>
+                  <option value="GEQ">>=</option>
+                  <option value="EQU">==</option>
+                  <option value="LEQ"><=</option>
+                  <option value="LSS"><</option>
+                  <option value="NEQ">!=</option>
+                </select>
+                <input class="form-control col-sm-4" type="text" placeholder="Value" id="rule-form-value" required>
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -266,13 +272,10 @@
   <span class="rule-time-added">null</span>
   <hr>
   <h5 style="text-align: center;">Expected&nbsp;Data&nbsp;Type&nbsp;</h5>
-  <span class="rule-expected-value">null</span>
+  <span class="rule-expected-type">null</span>
   <hr>
-  <h5 style="text-align: center;">Operator&nbsp;</h5>
-  <span class="rule-operator">null</span>
-  <hr>
-  <h5 style="text-align: center;">Value&nbsp;</h5>
-  <span class="rule-value">null</span>
+  <h5 style="text-align: center;">Condition&nbsp;</h5>
+  <span class="rule-condition">null</span>
   <hr>
   <h5 style="text-align: center;">Endpoint&nbsp;</h5>
   <span class="rule-endpoint">null</span>

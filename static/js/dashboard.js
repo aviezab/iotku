@@ -55,6 +55,60 @@ function deviceListRefresh() {
 	});
 }
 
+function sensorListRefresh() {
+	$.get( device_sensor_list_url, {device_id: sensor_device_id}, function(data) {
+		$(previous_popover).popover('hide');
+		$('#sensor-list').html('');
+		var result = data['result'];
+		if (result.length > 0) {
+			$('#sensor-list-error').text('');
+			$('#sensor-list-empty').addClass('d-none');
+			for(var k in data['result']) {
+				var format = '<div class="row">' + 
+				'<button onclick="sensorInfo(this)" type="button" class="btn button-icon sensor" data-sensor-id="' + result[k]['sensor_id']  + '">' + result[k]['sensor_name'] + '</button>' + 
+				'<button onclick="sensorDeletePrompt(this)" type="button" class="btn button-icon sensor-delete" data-sensor-id="' + result[k]['sensor_id']  + '">&times;</button>' + 
+				'</div>';
+				$('#sensor-list').append(format);
+			}
+		}
+		else if (result.length == 0) {
+			$('#sensor-list-error').text('');
+			$('#sensor-list-empty').removeClass('d-none');
+		}
+		else {
+			$('#sensor-list-empty').addClass('d-none');
+			$('#sensor-list-error').text('Error: ' + data.reason);
+		}
+	});
+}
+
+function ruleListRefresh() {
+  $.get( sensor_rule_list_url, {device_id: rule_device_id,sensor_id: rule_sensor_id}, function(data) {
+    $(previous_popover).popover('hide');
+    $('#rule-list').html('');
+    var result = data['result'];
+    if (result.length > 0) {
+      $('#rule-list-error').text('');
+      $('#rule-list-empty').addClass('d-none');
+      for(var k in data['result']) {
+        var format = '<div class="row">' + 
+        '<button onclick="ruleInfo(this)" type="button" class="btn button-icon rule" data-rule-id="' + result[k]['rule_id']  + '">' + result[k]['rule_name'] + '</button>' + 
+        '<button onclick="ruleDeletePrompt(this)" type="button" class="btn button-icon rule-delete" data-rule-id="' + result[k]['rule_id']  + '">&times;</button>' + 
+        '</div>';
+        $('#rule-list').append(format);
+      }
+    }
+    else if (result.length == 0) {
+      $('#rule-list-error').text('');
+      $('#rule-list-empty').removeClass('d-none');
+    }
+    else {
+      $('#rule-list-empty').addClass('d-none');
+      $('#rule-list-error').text('Error: ' + data.reason);
+    }
+  });
+}
+
 function deviceInfo(element) {
 	hidePopover();
 	if (previous_popover != element) {
@@ -81,77 +135,6 @@ function deviceInfo(element) {
 		$(element).popover('disable');
 		previous_popover = $(element);
 	}
-}
-
-function deviceDeletePrompt(element) {
-	delete_device_id = $(element).attr('data-device-id');
-	hidePopover();
-	if (previous_popover != element) {
-		$(element).popover({
-			placement:'top',
-			html:true,
-			content:function(){
-				return $("#device-delete-prompt").html();
-			}
-		});
-		$(element).popover('enable');
-		$(element).popover('toggle');
-		$(element).popover('disable');
-		previous_popover = $(element);
-	}
-}
-
-function deviceDeletePromptYes(element) {
-	hidePopover();
-	$.ajax({
-		type: "POST",
-		url: user_remove_device_url,
-		contentType: "application/json",
-		dataType: "json",
-		data: JSON.stringify({
-			"device_id": delete_device_id
-		}),
-		success: function(result){
-			if (result.result == true) {
-				deviceListRefresh();
-			}
-			else {
-				$(element).parents('.device-delete').find('.device-delete-error').text(result.reason);
-			}
-		}
-	});
-}
-
-function deviceDeletePromptNo(element){
-	hidePopover();
-	delete_device_id = null;
-}
-
-function sensorListRefresh() {
-	$.get( device_sensor_list_url, {device_id: sensor_device_id}, function(data) {
-		$(previous_popover).popover('hide');
-		$('#sensor-list').html('');
-		var result = data['result'];
-		if (result.length > 0) {
-			$('#sensor-list-error').text('');
-			$('#sensor-list-empty').addClass('d-none');
-			for(var k in data['result']) {
-				var format = '<div class="row">' + 
-				'<button onclick="sensorInfo(this)" type="button" class="btn button-icon sensor" data-sensor-id="' + result[k]['sensor_id']  + '">' + result[k]['sensor_name'] + '</button>' + 
-				'<button onclick="sensorDeletePrompt(this)" type="button" class="btn button-icon sensor-delete" data-sensor-id="' + result[k]['sensor_id']  + '">&times;</button>' + 
-				'</div>';
-				$('#sensor-list').append(format);
-			}
-		}
-		else if (result.length == 0) {
-			$('#sensor-list-error').text('');
-			$('#sensor-list-empty').removeClass('d-none');
-		}
-		else {
-			$('#sensor-list-empty').addClass('d-none');
-			$('#sensor-list-error').text('Error: ' + data.reason);
-		}
-	});
 }
 
 function sensorInfo(element) {
@@ -188,84 +171,6 @@ function sensorInfo(element) {
 	}
 }
 
-function sensorDeletePrompt(element) {
-	delete_sensor_id = $(element).attr('data-sensor-id');
-	hidePopover();
-	if (previous_popover != element) {
-		$(element).popover({
-			placement:'top',
-			html:true,
-			content:function(){
-				return $("#sensor-delete-prompt").html();
-			}
-		});
-		$(element).popover('enable');
-		$(element).popover('toggle');
-		$(element).popover('disable');
-		previous_popover = $(element);
-	}
-}
-
-function sensorDeletePromptYes(element) {
-	hidePopover();
-	$.ajax({
-		type: "POST",
-		url: device_remove_sensor_url,
-		contentType: "application/json",
-		dataType: "json",
-		data: JSON.stringify({
-			"device_id": sensor_device_id,
-			"sensor_id": delete_sensor_id
-		}),
-		success: function(result){
-			if (result.result == true) {
-				sensorListRefresh();
-			}
-			else {
-				$(element).parents('.sensor-delete').find('.sensor-delete-error').text(result.reason);
-			}
-		}
-	});
-}
-
-function sensorDeletePromptNo(element){
-	hidePopover();
-	delete_sensor_id = null;
-}
-
-function getSensorListFormSubmit(event) {
-	event.preventDefault();
-	sensor_device_id = $("#get-sensor-list-device-id").val();
-	sensorListRefresh();
-}
-
-function ruleListRefresh() {
-  $.get( sensor_rule_list_url, {device_id: rule_device_id,sensor_id: rule_sensor_id}, function(data) {
-    $(previous_popover).popover('hide');
-    $('#rule-list').html('');
-    var result = data['result'];
-    if (result.length > 0) {
-      $('#rule-list-error').text('');
-      $('#rule-list-empty').addClass('d-none');
-      for(var k in data['result']) {
-        var format = '<div class="row">' + 
-        '<button onclick="ruleInfo(this)" type="button" class="btn button-icon rule" data-rule-id="' + result[k]['rule_id']  + '">' + result[k]['rule_name'] + '</button>' + 
-        '<button onclick="ruleDeletePrompt(this)" type="button" class="btn button-icon rule-delete" data-rule-id="' + result[k]['rule_id']  + '">&times;</button>' + 
-        '</div>';
-        $('#rule-list').append(format);
-      }
-    }
-    else if (result.length == 0) {
-      $('#rule-list-error').text('');
-      $('#rule-list-empty').removeClass('d-none');
-    }
-    else {
-      $('#rule-list-empty').addClass('d-none');
-      $('#rule-list-error').text('Error: ' + data.reason);
-    }
-  });
-}
-
 function ruleInfo(element) {
 	hidePopover();
 	if (previous_popover != element) {
@@ -281,14 +186,11 @@ function ruleInfo(element) {
 				$.get( rule_time_added_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
 					$(".rule-time-added").text(data.result);
 				});
-				$.get( rule_expected_value_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
-					$(".rule-expected-value").text(data.result);
+				$.get( rule_expected_type_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
+					$(".rule-expected-type").text(data.result);
 				});
-				$.get( rule_operator_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
-					$(".rule-operator").text(data.result);
-				});
-				$.get( rule_value_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
-					$(".rule-value").text(data.result);
+				$.get( rule_condition_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
+					$(".rule-condition").text(JSON.stringify(data.result));
 				});
 				$.get( rule_endpoint_url, {sensor_id: rule_sensor_id, device_id: rule_device_id, rule_id: rule_id}, function(data) {
 					$(".rule-endpoint").text(data.result);
@@ -297,6 +199,42 @@ function ruleInfo(element) {
 					$(".rule-command").text(data.result);
 				});
 				return $("#rule-info").html();
+			}
+		});
+		$(element).popover('enable');
+		$(element).popover('toggle');
+		$(element).popover('disable');
+		previous_popover = $(element);
+	}
+}
+
+function deviceDeletePrompt(element) {
+	delete_device_id = $(element).attr('data-device-id');
+	hidePopover();
+	if (previous_popover != element) {
+		$(element).popover({
+			placement:'top',
+			html:true,
+			content:function(){
+				return $("#device-delete-prompt").html();
+			}
+		});
+		$(element).popover('enable');
+		$(element).popover('toggle');
+		$(element).popover('disable');
+		previous_popover = $(element);
+	}
+}
+
+function sensorDeletePrompt(element) {
+	delete_sensor_id = $(element).attr('data-sensor-id');
+	hidePopover();
+	if (previous_popover != element) {
+		$(element).popover({
+			placement:'top',
+			html:true,
+			content:function(){
+				return $("#sensor-delete-prompt").html();
 			}
 		});
 		$(element).popover('enable');
@@ -324,6 +262,49 @@ function ruleDeletePrompt(element) {
 	}
 }
 
+function deviceDeletePromptYes(element) {
+	hidePopover();
+	$.ajax({
+		type: "POST",
+		url: user_remove_device_url,
+		contentType: "application/json",
+		dataType: "json",
+		data: JSON.stringify({
+			"device_id": delete_device_id
+		}),
+		success: function(result){
+			if (result.result == true) {
+				deviceListRefresh();
+			}
+			else {
+				$(element).parents('.device-delete').find('.device-delete-error').text(result.reason);
+			}
+		}
+	});
+}
+
+function sensorDeletePromptYes(element) {
+	hidePopover();
+	$.ajax({
+		type: "POST",
+		url: device_remove_sensor_url,
+		contentType: "application/json",
+		dataType: "json",
+		data: JSON.stringify({
+			"device_id": sensor_device_id,
+			"sensor_id": delete_sensor_id
+		}),
+		success: function(result){
+			if (result.result == true) {
+				sensorListRefresh();
+			}
+			else {
+				$(element).parents('.sensor-delete').find('.sensor-delete-error').text(result.reason);
+			}
+		}
+	});
+}
+
 function ruleDeletePromptYes(element) {
 	hidePopover();
 	$.ajax({
@@ -347,16 +328,19 @@ function ruleDeletePromptYes(element) {
 	});
 }
 
+function deviceDeletePromptNo(element){
+	hidePopover();
+	delete_device_id = null;
+}
+
 function sensorDeletePromptNo(element){
 	hidePopover();
 	delete_sensor_id = null;
 }
 
-function getRuleListFormSubmit(event) {
-  event.preventDefault();
-  rule_device_id = $("#get-rule-list-device-id").val();
-  rule_sensor_id = $("#get-rule-list-sensor-id").val();
-  ruleListRefresh();
+function ruleDeletePromptNo(element){
+	hidePopover();
+	delete_sensor_id = null;
 }
 
 function deviceAddFormSubmit (event) {
@@ -417,11 +401,16 @@ function ruleAddFormSubmit (event) {
 	var sensor_id = $("#rule-form-sensor-id").val();
 	var rule_id = $("#rule-form-id").val();
 	var rule_name = $("#rule-form-name").val();
-	var rule_expected_value = $("#rule-form-expected-value").val();
-	var rule_operator = $("#rule-form-operator").val();
-	var rule_value = $("#rule-form-value").val();
+	var rule_expected_type = $("#rule-form-expected-type").val();
+	var rule_condition = [];
 	var rule_endpoint = $("#rule-form-endpoint").val();
 	var rule_command = $("#rule-form-command").val();
+	$('#condition').children().each(function(i) {
+		var doc = {}
+		doc.operator = $(this).find('#rule-form-operator').val();
+		doc.value = $(this).find('#rule-form-value').val();
+		rule_condition[i] = doc;
+	});
 	$.ajax({
 		type: "POST",
 		url: sensor_add_rule_url,
@@ -432,9 +421,8 @@ function ruleAddFormSubmit (event) {
 			"sensor_id": sensor_id,
 			"rule_id": rule_id,
 			"rule_name": rule_name,
-			"expected_value": rule_expected_value,
-			"operator": rule_operator,
-			"value": rule_value,
+			"expected_type": rule_expected_type,
+			"condition": rule_condition,
 			"endpoint": rule_endpoint,
 			"command": rule_command
 		}),
@@ -448,6 +436,40 @@ function ruleAddFormSubmit (event) {
 			}
 		}
 	});
+}
+
+function getSensorListFormSubmit(event) {
+	event.preventDefault();
+	sensor_device_id = $("#get-sensor-list-device-id").val();
+	sensorListRefresh();
+}
+
+function getRuleListFormSubmit(event) {
+  event.preventDefault();
+  rule_device_id = $("#get-rule-list-device-id").val();
+  rule_sensor_id = $("#get-rule-list-sensor-id").val();
+  ruleListRefresh();
+}
+
+function addCondition() {
+	var format = '<div class="form-inline row">' +
+                '<label class="col-sm-2" for="rule-form-operator">Data</label>' +
+                '<select class="form-control col-sm-4" id="rule-form-operator">' +
+                  '<option value="GTR">></option>' +
+                  '<option value="GEQ">>=</option>' +
+                  '<option value="EQU">==</option>' +
+                  '<option value="LEQ"><=</option>' +
+                  '<option value="LSS"><</option>' +
+                  '<option value="NEQ">!=</option>' +
+                '</select>' +
+                '<input class="form-control col-sm-4" type="text" placeholder="Value" id="rule-form-value" required>' +
+                '<button class="col-sm-2 button-icon" onclick="removeCondition(this);">&times;</button>' + 
+              '</div>';
+	$('#condition').append(format);
+}
+
+function removeCondition(element) {
+	$(element).parent().remove();
 }
 
 $(document).ready(function(){

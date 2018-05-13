@@ -24,9 +24,9 @@ class iotku_custom_handler(NATS):
         rule_list = sensor.get_rule_list()
         for x in rule_list:
             if x.compare(data):
-                device = user.find_device(x.get_endpoint())
+                device = user.find_device(x.get('endpoint'))
                 if device:
-                    device.send_command(x.get_command())
+                    device.send_command(x.get('command'))
 
         # DEBUG: print('EXITING post_handler')
 

@@ -26,7 +26,7 @@ def sensor_name():
       if not sensor:
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
-        return jsonify({'result':sensor.get_sensor_name()})
+        return jsonify({'result':sensor.get('sensor_name')})
 
 @api.route('/api/sensor/time_added', methods=['GET'])
 def sensor_time_added():
@@ -47,7 +47,7 @@ def sensor_time_added():
       if not sensor:
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
-        return jsonify({'result':sensor.get_time_added()})
+        return jsonify({'result':sensor.get('time_added')})
 
 @api.route('/api/sensor/get_data', methods=['GET'])
 def sensor_get_data():
@@ -78,7 +78,7 @@ def sensor_get_data():
       if not sensor:
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
-        data_collection = sensor.get_data(from_number,from_number+25)
+        data_collection = sensor.get_data(from_number,to_number)
         return jsonify({'result':data_collection})
 
 @api.route('/api/sensor/total_data_entry', methods=['GET'])
@@ -100,7 +100,7 @@ def sensor_total_data_entry():
       if not sensor:
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
-        return jsonify({'result':sensor.get_total_data_entry()})
+        return jsonify({'result':sensor.get('total_data_entry')})
 
 @api.route('/api/sensor/last_data_added_time', methods=['GET'])
 def sensor_last_data_added_time():
@@ -121,7 +121,7 @@ def sensor_last_data_added_time():
       if not sensor:
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
-        return jsonify({'result':sensor.get_last_data_added_time()})
+        return jsonify({'result':sensor.get('last_data_added_time')})
 
 @api.route('/api/sensor/post_data', methods=['POST'])
 def sensor_post_data():
@@ -166,7 +166,7 @@ def sensor_total_rule():
       if not sensor:
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
-        return jsonify({'result':sensor.get_total_rule()})
+        return jsonify({'result':sensor.get('total_rule')})
 
 @api.route('/api/sensor/rule_list', methods=['GET'])
 def sensor_rule_list():
@@ -188,8 +188,8 @@ def sensor_rule_list():
         return jsonify({'result':False,'reason':'Sensor ID not found'})
       else:
         rules = sensor.get_rule_list()
-        rule_id = [x.get_rule_id() for x in rules]
-        rule_name = [x.get_rule_name() for x in rules]
+        rule_id = [x.get('rule_id') for x in rules]
+        rule_name = [x.get('rule_name') for x in rules]
         rule_list = [{'rule_id':x,'rule_name':y} for x,y in zip(rule_id, rule_name)]
         return jsonify({'result':rule_list})
 
@@ -199,21 +199,22 @@ def sensor_add_rule():
   content = request.get_json(silent=True)
   if not all(x in session.keys() for x in ["logged_in","email"]):
     return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
-  elif not all(x in content.keys() for x in ["device_id","sensor_id","rule_id","rule_name","expected_value","operator","value","endpoint","command"]):
-    return jsonify({'result': False, 'reason': "Invalid operator and/or expected_value"})
-  elif not content['operator'].upper() in ['EQU','NEQ','LSS','LEQ','GTR','GEQ'] or not content['expected_value'].upper() in ['STR','INT']:
-    return jsonify({'result': False, 'reason': "Invalid operator and/or expected_value"})
+  elif not all(x in content.keys() for x in ["device_id","sensor_id","rule_id","rule_name","expected_type","condition","endpoint","command"]):
+    return jsonify({'result': False, 'reason': "Invalid format"})
+  elif not content['expected_type'].upper() in ['STR','INT']:
+    return jsonify({'result': False, 'reason': "Invalid expected_type"})
   else:
-    if content['expected_value'].upper() == 'STR':
-      try:
-        content['value'] = str(content['value'])
-      except:
-        return jsonify({'result': False, 'reason': "Expected value as string"})
-    elif content['expected_value'].upper() == 'INT':
-      try:
-        content['value'] = int(content['value'])
-      except:
-        return jsonify({'result': False, 'reason': "Expected value as integer"})
+    try:
+      for x in content['condition']:
+        assert x['operator'] in ['EQU','NEQ','LSS','LEQ','GTR','GEQ']
+        if content['expected_type'].upper() == 'STR':
+          x['value'] = str(x['value'])
+        elif content['expected_type'].upper() == 'INT':
+          x['value'] = int(x['value'])
+    except Exception as e:
+      print(str(e))
+      return jsonify({'result': False, 'reason': "Invalid format for one of the conditions"})
+
     device_id = content['device_id']
     sensor_id = content['sensor_id']
     endpoint = content["endpoint"]
@@ -228,14 +229,13 @@ def sensor_add_rule():
       else:
         rule_id = content["rule_id"]
         rule_name = content["rule_name"]
-        expected_value = content["expected_value"]
-        operator = content["operator"]
-        value = content["value"]
+        expected_type = content["expected_type"]
+        condition = content["condition"]
         command = content["command"]
         if sensor.find_rule(rule_id):
           return jsonify({'result': False, 'reason': "Rule ID exists"})
         else:
-          sensor.add_rule(rule_id,rule_name,expected_value,operator,value,endpoint,command)
+          sensor.add_rule(rule_id,rule_name,expected_type,condition,endpoint,command)
           return jsonify({'result': True})
 
 @api.route('/api/sensor/remove_rule', methods=['POST'])

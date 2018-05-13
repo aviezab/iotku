@@ -28,7 +28,7 @@ def user_time_added():
     return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
   else:
     user = iotku.find_user(email=session["email"])
-    return jsonify({'result':user.get_time_added()})
+    return jsonify({'result':user.get('time_added')})
 
 @api.route('/api/user/total_device', methods=['GET'])
 def user_total_device():
@@ -37,7 +37,7 @@ def user_total_device():
     return jsonify({'result':False,'reason':'Not logged in / Unauthorized'})
   else:
     user = iotku.find_user(email=session["email"])
-    return jsonify({'result': user.get_total_device()})
+    return jsonify({'result': user.get('total_device')})
 
 @api.route('/api/user/device_list', methods=['GET'])
 def user_device_list():
@@ -47,8 +47,8 @@ def user_device_list():
   else:
     user = iotku.find_user(email=session["email"])
     devices = user.get_device_list()
-    device_id = [x.get_device_id() for x in devices]
-    device_name = [x.get_device_name() for x in devices]
+    device_id = [x.get('device_id') for x in devices]
+    device_name = [x.get('device_name') for x in devices]
     device_list = [{'device_id':x,'device_name':y} for x,y in zip(device_id,device_name)]
     return jsonify({'result':device_list})
 

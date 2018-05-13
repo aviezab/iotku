@@ -14,8 +14,8 @@ def register():
     if not iotku.find_user(email=email):
       user = iotku.add_user(email=email,password=password)
       session['logged_in'] = True
-      session['email'] = user.get_email()
-      session['api_key'] = user.get_api_key()
+      session['email'] = user.get('email')
+      session['api_key'] = user.get('api_key')
       return jsonify({'result': True})
     else:
       return jsonify({'result': False,'reason':'An account with the same email exists'})
@@ -34,8 +34,8 @@ def connect():
         device = user.find_device(device_id)
         if device: 
           session['logged_in'] = True
-          session['api_key'] = user.get_api_key()
-          session['device_id'] = device.get_device_id()
+          session['api_key'] = user.get('api_key')
+          session['device_id'] = device.get('device_id')
           return jsonify({'result': True})
         else:
           return jsonify({'result': False,'reason': 'Invalid Device ID'})
@@ -50,8 +50,8 @@ def connect():
     user = iotku.find_user(email=email, password=password)
     if user:
       session['logged_in'] = True
-      session['api_key'] = user.get_api_key()
-      session['email'] = user.get_email()
+      session['api_key'] = user.get('api_key')
+      session['email'] = user.get('email')
       return jsonify({'result': True})
     else:
       return jsonify({'result': False,'reason':'Wrong email or password'})
