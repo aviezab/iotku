@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>iotKu</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/index.css">
+  </head>
+  <body>
+    <div class="bg-1">
+      <div id="panel-login">
+        <a href="#" class="close-btn">&times;</a>
+        <h2>Login to Account</h2>
+        <h5 id="login-error"></h5>
+        <form class="" id="login-form" action="" method="post">
+          <input type="email" name="email" placeholder="Email" class="form-control" id="login-email">
+          <input type="password" name="password" placeholder="Password" class="form-control" id="login-password">
+          <button type="submit" name="login" class="btn btn-iot" id="btn-login-submit">Login</button>
+          <button type="button" name="register" id="btn-register" class="btn btn-iot">Register</button>
+        </form>
+        <a href="#">Forgot Password?</a>
+      </div>
+      <div id="panel-register">
+        <a href="#" class="close-btn">&times;</a>
+        <h2>Register an Account</h2>
+        <h5 id="register-error"></h5>
+        <form class="" id="register-form" action="" method="post">
+          <input type="email" name="email" id="register-email" placeholder="Email" class="form-control">
+          <input type="password" name="password" id="register-password" placeholder="Password" class="form-control">
+          <input type="password" name="confirm" id="register-password-confirm" placeholder="Confirm Password" class="form-control">
+          <button type="submit" name="register" id="btn-register-submit" class="btn btn-iot">Register</button>
+          <button type="button" name="login" id="btn-signIn2" class="btn btn-iot">Login</button>
+        </form>
+      </div>
+      <div class="home">
+        <h1>Welcome to iotKu</h1>
+        <h2>Internet of Things Platform</h2>
+        <button type="button" id="btn-signIn" class="btn btn-iot">
+          Sign In
+        </button>
+      </div>
+    </div>
+    <div class="bg-2">
+      <div class="work">
+        <p>Smart solutions are at the core of all that we do at iotKu. Our main goal is finding smart ways of using technology that will help build a better tomorrow for everyone, everywhere. Click below to learn more about the technology behind our IoT
+          Startup, or get in touch to set up a meeting with one of our representatives.</p>
+      </div>
+    </div>
+    <!-- footernya -->
+    <footer class="footer-text">Made With <span class="fa fa-heart" style="color: rgb(224, 57, 74)"></span><br>© 2018 Team iotKu</footer>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/constants.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+</html>

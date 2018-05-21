@@ -22,16 +22,7 @@ import hashlib
 import datetime
 
 class Iotku:
-  def __init__(
-      self,
-      client = MongoClient(),
-      db = 'iotku',
-      user_list = 'user_list',
-      device_list = 'device_list',
-      sensor_list = 'sensor_list',
-      rule_list = 'rule_list'
-    ):
-
+  def __init__(self, client = MongoClient(), db = 'iotku', user_list = 'user_list', device_list = 'device_list', sensor_list = 'sensor_list', rule_list = 'rule_list'):
     # -----------------------------------------------------------------------------------
     # Fungsi:
     # - untuk inisialisasi variabel-variable penting
@@ -42,13 +33,6 @@ class Iotku:
     # - sensor_list adalah nama collection untuk document-document sensor (tipe string)
     # - rule_list adalah nama collection untuk document-document rule (tipe string)
     # -----------------------------------------------------------------------------------
-
-    # Cek tipe variabel-variable
-    assert type(db) == type(str())
-    assert type(user_list) == type(str())
-    assert type(device_list) == type(str())
-    assert type(sensor_list) == type(str())
-    assert type(rule_list) == type(str())
 
     # Init client
     self.client = client
@@ -67,8 +51,6 @@ class Iotku:
 
     # Init rule_list collection
     self.rule_list = self.db[rule_list]
-
-
 
   def get_user_list(self):
     # -----------------------------------------------
@@ -99,8 +81,6 @@ class Iotku:
 
     # Return user_list
     return user_list
-
-
 
   def find_user(self, **user_info):
     # --------------------------------------------------------------------------------
@@ -322,7 +302,6 @@ class User(Iotku):
 
     # Return device_list
     return device_list
-
 
   def find_device(self, device_id):
     # -----------------------------------------
@@ -971,8 +950,7 @@ class Rule(Sensor):
     # Return value (jika tidak ada, akan return None)
     return self.rule_document.get(key)
 
-  def change_rule_info(self, rule_id = None, rule_name = None, expected_type = None, 
-                          condition = None, endpoint = None, command = None):
+  def change_rule_info(self, rule_id = None, rule_name = None, expected_type = None, condition = None, endpoint = None, command = None):
     # ------------------------------------------
     # Fungsi:
     # - untuk mengganti info rule

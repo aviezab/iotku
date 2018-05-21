@@ -1,0 +1,154 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+.bg-1 {
+  background-image: linear-gradient(
+    to bottom,
+      rgba(0, 0, 0, 0.50),
+      rgba(0, 0, 0, 0.85)
+    ),
+    url(../images/pcb-background.jpg);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* width: 100%; */
+  height: 100vh;
+}
+.bg-2 {
+  background-image: linear-gradient(
+    to bottom,
+      rgba(0, 0, 0, 0.50),
+      rgba(0, 0, 0, 0.85)
+    ),
+    url(../images/ti-rede.jpg);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* width: 100%; */
+  height: 100vh;
+}
+.home {
+  padding-left: 5%;
+  padding-top: 28%;
+  padding-right: 20%;
+}
+.home > h1, p, h3 {
+  margin: 0;
+}
+.home > h1 {
+  color: white;
+  font-weight: 300;
+  font-size: 3rem;
+}
+.home > h2 {
+  color: rgba(255,255,255,0.85);
+  font-size: 2rem;
+  margin-top: 2px;
+}
+.home > p {
+  color: rgba(255,255,255,0.6);
+}
+.work {
+  padding-left: 15%;
+  padding-top: 18%;
+  padding-right: 15%;
+}
+.work p {
+  color: white;
+  font-size: 20px;
+  text-align: center;
+}
+
+.btn-iot {
+  margin-top: 15px;
+  background-color: rgb(224, 57, 74);
+  color: white;
+  font-weight: 600;
+  padding: 5px 45px;
+  border-radius: 8px;
+}
+.btn-iot:hover, .btn-iot:focus {
+  background-color: rgb(205, 32, 38);
+  color: white;
+}
+#panel-login, #panel-register {
+  position: fixed;
+  right: 0;
+  background: linear-gradient(
+    rgb(224, 57, 74),
+    rgb(224, 57, 74),
+    rgb(224, 57, 74),
+    rgba(224, 57, 74, 0.7)
+    );
+  height: 100%;
+  width: 25%;
+  padding: 3%;
+  padding-top: 15%;
+  display: none;
+  text-align: left;
+}
+#panel-login h2, #panel-register h2 {
+  color: white;
+  padding-bottom: 10px;
+}
+#panel-login .form-control, #panel-register .form-control {
+  margin-top: 10px;
+  background-color: transparent;
+  border: 2px solid transparent; /* change bootstrap border */
+  border-bottom: 2px solid rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.85);
+  padding-left: 2px;
+}
+#panel-login .form-control::placeholder, #panel-register .form-control::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+#panel-login .btn-iot, #panel-register .btn-iot {
+  display: inline-block;
+  padding: 5px 30px;
+  margin: 15px 3px;
+  background-color: rgba(255,255,255,1);
+  color: rgb(224, 57, 74);
+}
+#panel-login .btn-iot:hover, #panel-register .btn-iot:hover {
+  color: rgba(255,255,255,1);
+  background-color: transparent;
+  border: 1px solid white;
+}
+#panel-login a, #panel-register a {
+  /* text-decoration: none; */
+  color: rgba(255,255,255,0.55);
+  padding-left: 5px;
+}
+.close-btn {
+  position: absolute;
+  font-size: 40px;
+  top: 0;
+  right: 20px;
+  text-decoration: none;
+}
+.close-btn:hover, .close-btn:focus {
+  text-decoration: none;
+}
+#panel-login .close-btn:hover, #panel-register .close-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
+}
+.footer-text {
+  position: absolute;
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  font-size: 16px;
+  bottom: 0;
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media screen and (max-width: 600px)
+{
+    html {
+      font-size: 12px;
+    }
+    #panel-login, #panel-register {
+        width: 100%;
+    }
+}
