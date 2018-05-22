@@ -1,0 +1,12 @@
+.iotku-bg-primary {
+  background-color: red;
+}
+
+#iotku-front {
+  height: 100vh;
+  /*background: linear-gradient(to bottom right,rgba(255,0,0, 1),rgba(0,0,0, 0)), url('../images/iotku-front.png');*/
+  background: red;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll; 
+}
