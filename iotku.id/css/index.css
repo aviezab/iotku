@@ -3,10 +3,17 @@
 }
 
 #iotku-front {
-  height: 100vh;
+  height:100vh;
+  min-height: 500px;
   /*background: linear-gradient(to bottom right,rgba(255,0,0, 1),rgba(0,0,0, 0)), url('../images/iotku-front.png');*/
-  background: red;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: scroll; 
+  background: #E80000;
+}
+
+#iotku-front-footer {
+  position: relative;
+  left: -15px;
+  bottom: 45px;
+}
+
+#iotku-team {
 }
