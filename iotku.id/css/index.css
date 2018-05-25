@@ -1,19 +1,33 @@
 .iotku-bg-primary {
-  background-color: red;
+  background-color: rgb(224, 57, 74);
 }
 
 #iotku-front {
   height:100vh;
   min-height: 500px;
   /*background: linear-gradient(to bottom right,rgba(255,0,0, 1),rgba(0,0,0, 0)), url('../images/iotku-front.png');*/
-  background: #E80000;
+  background: linear-gradient(to right, rgb(224, 57, 74), rgb(213, 47, 64));
+  font-family: 'Quicksand', sans-serif;
 }
-
+#iotku-front h5 {
+  font-size: 25px;
+}
+#logo {
+   /* width: inherit; */
+   max-width: 440px;
+}
 #iotku-front-footer {
   position: relative;
   left: -15px;
   bottom: 45px;
 }
-
+#iotku-features {
+  font-family: 'Quicksand', sans-serif;
+  background-color: rgb(245, 245, 245);
+}
 #iotku-team {
+  font-family: 'Quicksand', sans-serif;
+}
+#iotku-team img {
+  width: 150px;
 }
