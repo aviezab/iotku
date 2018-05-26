@@ -16,11 +16,6 @@
    /* width: inherit; */
    max-width: 440px;
 }
-#iotku-front-footer {
-  position: relative;
-  left: -15px;
-  bottom: 45px;
-}
 #iotku-features {
   font-family: 'Quicksand', sans-serif;
   background-color: rgb(245, 245, 245);
@@ -48,4 +43,30 @@
 }
 #iotku-team .text {
   color: rgba(0, 0, 0, 0.75)
+}
+#footer {
+  background-color: rgb(33, 33, 33);
+  width: 100%;
+  height: 180px;
+  color: rgb(120, 120, 120);
+  font-family: sans-serif;
+}
+#footer #wrapper-footer {
+  padding-top: 30px;
+}
+#footer a {
+  margin-right: 15px;
+  color: rgb(224, 57, 74);
+}
+#footer p {
+    margin-bottom: 3px;
+}
+#python-logo img {
+  width: 100px;
+  height: 50px;
+  bottom: 0;
+  padding-top: 10px;
+}
+#python-logo img:hover {
+  filter: brightness(150%);
 }
