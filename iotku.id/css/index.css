@@ -26,7 +26,13 @@
   background-color: rgb(245, 245, 245);
 }
 #iotku-features img {
-  filter: drop-shadow(5px 5px 8px gray);
+  filter: drop-shadow(2px 2px 3px gray);
+  width: 200px;
+  height: 200px;
+  margin: 5px 5px;
+}
+#iotku-features h3 {
+  margin-top: 20px;
 }
 #iotku-team {
   font-family: 'Quicksand', sans-serif;
