@@ -25,9 +25,21 @@
   font-family: 'Quicksand', sans-serif;
   background-color: rgb(245, 245, 245);
 }
+#iotku-features img {
+  filter: drop-shadow(5px 5px 8px gray);
+}
 #iotku-team {
   font-family: 'Quicksand', sans-serif;
 }
 #iotku-team img {
   width: 150px;
+}
+#iotku-team p {
+  margin-top: -8px;
+}
+#iotku-team h5 {
+  margin-top: -5px;
+}
+#iotku-team .text {
+  color: rgba(0, 0, 0, 0.75)
 }
