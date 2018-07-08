@@ -1,8 +1,6 @@
 from flask import Blueprint, request, session, jsonify, url_for
 from .iotku_database import Iotku
-from . import api
-
-iotku = Iotku()
+from . import api, iotku
 
 #---------------------CORE---------------------------
 @api.route('/api/register', methods=['POST'])
