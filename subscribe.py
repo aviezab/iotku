@@ -2,7 +2,7 @@ from api import iotku, c
 import datetime
 import asyncio
 
-class iotku_custom_handler(NATS):
+class iotku_custom_handler:
     @asyncio.coroutine
     def post_handler(self, msg):
         # DEBUG: print('ENTERING post_handler')
