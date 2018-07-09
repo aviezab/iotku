@@ -1,3 +1,4 @@
 flask
 pyMongo
 redis
+asyncio-nats-client

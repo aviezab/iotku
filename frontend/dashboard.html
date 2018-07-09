@@ -22,28 +22,10 @@
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <button class="nav-link button-icon" id="logout" href="" style="text-align: left">Logout</button>
+        <a class="nav-link button-icon" id="logout" href="/api/disconnect">Logout</a>
       </ul>
     </div>
   </nav>
-  <div id="sidenav-big" class="sidenav">
-    <ul>
-      <h5>IoT&nbsp;Platform</h5>
-      <li><a href="#">Manage</a></li>
-      <li><a href="#">Authorization</a></li>
-      <li><a href="#">Plan</a></li>
-    </ul>
-    <a href="javascript:void(0)" id="sidenav-close" onclick="closeNav()" style="color:white; text-align: center; font-size:25px;">&larr;</a>
-  </div>
-  <div id="sidenav-small" class="sidenav">
-    <ul>
-      <h5>I</h5>
-      <li><a href="#">M</a></li>
-      <li><a href="#">A</a></li>
-      <li><a href="#">P</a></li>
-    </ul>
-    <a href="javascript:void(0)" id="sidenav-open" onclick="openNav()" style="color:white; text-align: center; font-size:25px;">&rarr;</a>
-  </div>
   <div class="dashboard" id="main">
     <div class="p-4">
       <div class="container">
@@ -81,12 +63,14 @@
           <h4>Your Sensors</h4>
           <h5><span id="sensor-list-error"></span></h5>
           <h4>
-            <div class="btn-group">
-              <form class="btn-group" id="get-sensor-list" onsubmit="getSensorListFormSubmit(event)">
+            <div class="">
+              <form id="get-sensor-list" onsubmit="getSensorListFormSubmit(event)">
                 <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="get-sensor-list-device-id" required>
-                <button type="submit" class="fa fa-refresh button-icon" id="sensor-list-refresh" aria-hidden="true"></button>
+                <div class="btn-group">
+                  <button type="submit" class="fa fa-refresh button-icon" id="sensor-list-refresh" aria-hidden="true"></button>
+                  <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#sensor-form-modal" id="add-sensor-button"></button>
+                </div>
               </form>
-              <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#sensor-form-modal" id="add-sensor-button"></button>
             </div>
           </h4>
           <hr>
@@ -102,13 +86,19 @@
           <h4>Your Rules</h4>
           <h5><span id="rule-list-error"></span></h5>
           <h4>
-            <div class="btn-group">
-              <form class="btn-group" id="get-rule-list" onsubmit="getRuleListFormSubmit(event)">
-                <input type="text" name="device-id" placeholder="Device ID" class="form-control" id="get-rule-list-device-id" required>
-                <input type="text" name="sensor-id" placeholder="Sensor ID" class="form-control" id="get-rule-list-sensor-id" required>
-                <button type="submit" class="fa fa-refresh button-icon" id="rule-list-refresh" aria-hidden="true"></button>
+            <div>
+              <form id="get-rule-list" onsubmit="getRuleListFormSubmit(event)">
+                <div class="container">
+                  <div class="row">
+                  <input type="text" name="device-id" placeholder="Device ID" class="form-control col-6" id="get-rule-list-device-id" required>
+                  <input type="text" name="sensor-id" placeholder="Sensor ID" class="form-control col-6" id="get-rule-list-sensor-id" required>
+                  </div>
+                </div>
+                <div class="btn-group">
+                  <button type="submit" class="fa fa-refresh button-icon" id="rule-list-refresh" aria-hidden="true"></button>
+                  <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#rule-form-modal" id="add-rule-button"></button>
+                </div>
               </form>
-              <button type="button" name="button" class="fa fa-plus-circle button-icon" data-toggle="modal" data-target="#rule-form-modal" id="add-rule-button"></button>
             </div>
           </h4>
           <hr>

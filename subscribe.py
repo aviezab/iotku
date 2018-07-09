@@ -1,12 +1,6 @@
-from natslib import *
-from pymongo import MongoClient
-from iotku_database import Iotku
+from api import iotku, c
 import datetime
 import asyncio
-
-client = MongoClient()
-c = NATS()
-iotku = Iotku()
 
 class iotku_custom_handler(NATS):
     @asyncio.coroutine
