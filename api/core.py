@@ -62,6 +62,8 @@ def disconnect():
   session.pop('api_key', None)
   session.pop('device_id', None)
   session['logged_in'] = False
+  if request.method == 'GET':
+    return redirect('/')
   return jsonify({'result': True})
 
 @api.route('/api/is_logged_in')
