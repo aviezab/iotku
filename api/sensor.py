@@ -1,10 +1,5 @@
 from flask import Blueprint, request, session, jsonify, url_for
-from .iotku_database import Iotku
-from .natslib import NATS
-from . import api
-
-iotku = Iotku()
-c = NATS()
+from . import api, iotku, c
 
 #------------------SENSOR-------------------------
 @api.route('/api/sensor/name', methods=['GET'])

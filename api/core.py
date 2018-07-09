@@ -1,5 +1,4 @@
 from flask import Blueprint, request, session, jsonify, url_for
-from .iotku_database import Iotku
 from . import api, iotku
 
 #---------------------CORE---------------------------
