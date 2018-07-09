@@ -2,7 +2,7 @@ from flask import Flask, request, session, render_template, url_for, redirect, j
 from redissession import RedisSessionInterface
 import api, os
 
-app = Flask(__name__, static_url_path='', static_folder='../frontend')
+app = Flask(__name__, static_url_path='', static_folder='./frontend')
 app.register_blueprint(api.api)
 #Session akan disimpan pada RAM ketimbang Harddisk sehingga performa meningkat
 app.session_interface = RedisSessionInterface()
