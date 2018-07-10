@@ -2,3 +2,6 @@ flask
 pyMongo
 redis
 asyncio-nats-client
+pickle
+uuid
+uvloop
