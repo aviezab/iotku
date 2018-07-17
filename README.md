@@ -16,6 +16,10 @@ Cara memakai:
 - python3 app.py  
 - python3 subscribe.py  
 
+Cara Pakai API iotKu
+==================================================  
+List API, Register dan Login -- https://iotku.id/IoTKu_Register_Login.html
+API lengkap -- https://iotku.id/IoTKu_API.html
 
 Dependency and Supporting Engine  
 ==================================================  
